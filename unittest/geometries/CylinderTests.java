@@ -1,7 +1,7 @@
 /**
  *
  */
-package unittests.geometries;
+package unittest.geometries;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,7 +19,7 @@ import primitives.Vector;
  * @author Yoni Leventhal, Adiel Yekutiel
  *
  */
-class CylinderTest {
+class CylinderTests {
 
     /**
      * Test method for {@link geometries.Cylinder#getNormal(primitives.Point)}.

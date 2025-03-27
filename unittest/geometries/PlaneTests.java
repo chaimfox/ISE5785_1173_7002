@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-import geometries.*;
 import primitives.*;
 
 /**
@@ -16,7 +15,7 @@ import primitives.*;
  *
  * @author Yoni Leventhal, Adiel Yekutiel
  */
-public class PlaneTest {
+public class PlaneTests {
 
     private final double DELTA = 0.000001;
 
