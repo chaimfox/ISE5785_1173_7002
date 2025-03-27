@@ -4,9 +4,13 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class myClassTest {
+class PointTest {
 
     @Test
-    void getNormal() {
+    void add() {
+    }
+
+    @Test
+    void subtract() {
     }
 }
