@@ -1,7 +1,7 @@
 /**
  *
  */
-package unittest.geometries;
+package geometries;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -10,16 +10,27 @@ import org.junit.jupiter.api.Test;
 import geometries.Cylinder;
 import primitives.Point;
 import primitives.Ray;
-
 import primitives.Vector;
 
-/**
- * Testing Cylinder
- *
- * @author Yoni Leventhal, Adiel Yekutiel
- *
+ /**
+ * Unit tests for geometries.Cylinder class
+ * @authors alon greenstein, chaim fox
  */
+
 class CylinderTests {
+
+
+
+
+     /**
+      * Test method for {@link geometries.Cylinder#Cylinder(double, Ray, double)}.
+      */
+     @Test
+     void testCtor() {
+
+     }
+
+
 
     /**
      * Test method for {@link geometries.Cylinder#getNormal(primitives.Point)}.

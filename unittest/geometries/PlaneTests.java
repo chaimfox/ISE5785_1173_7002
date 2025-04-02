@@ -1,6 +1,3 @@
-/**
- *
- */
 package geometries;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -10,22 +7,24 @@ import org.junit.jupiter.api.Test;
 import primitives.*;
 
 /**
- *
- * Testing Plane
- *
- * @author Yoni Leventhal, Adiel Yekutiel
+ * Unit tests for geometries.Plane class
+ * @authors alon greenstein, chaim fox
  */
 public class PlaneTests {
 
     private final double DELTA = 0.000001;
 
+
+    /**
+     * Test method for {@link geometries.Plane#Plane(primitives.Point, primitives.Point, primitives.Point)}.
+     */
     @Test
     void testCtorThreePoints() {
         // =============== Boundary Values Tests ==================
 
         // TC01: not throws exception from ctor
-        assertThrows(IllegalArgumentException.class,
-                () -> new Plane(new Point(0, 0, 1), new Point(0, 0, 1), new Point(1, 0, 0)), //
+        assertThrows(IllegalArgumentException.class, () -> new Plane(
+                new Point(0, 0, 1), new Point(0, 0, 1), new Point(1, 0, 0)), //
                 "two point the same dose not throws exception");
 
         assertThrows(IllegalArgumentException.class,
@@ -34,6 +33,21 @@ public class PlaneTests {
 
     }
 
+
+    /**
+     * Test method for {@link geometries.Plane#Plane(primitives.Point, primitives.Vector)}.
+     */
+    @Test
+    void testCtorPointVectorParam() {
+
+    }
+
+
+
+
+    /**
+     * Test method for {@link geometries.Plane#getNormal()}.
+     */
     @Test
     void testGetNormal() {
 
@@ -49,5 +63,15 @@ public class PlaneTests {
         assertEquals(0,result.dotProduct(new Vector(0, -1, 1)), "Plane's normal is not orthogonal");
 
     }
+
+
+    /**
+     * Test method for {@link geometries.Plane#getNormal(primitives.Point)}.
+     */
+    @Test
+    void testGetNormalPointParam() {
+
+    }
+
 
 }

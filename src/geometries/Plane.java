@@ -6,7 +6,7 @@ import primitives.Vector;
 /**
  * Represents a plane in three-dimensional space.
  */
-public class Plane implements Geometry {
+public class Plane extends Geometry {
 
     /** A point on the plane. */
     private final Point pointOnPlane;
@@ -23,7 +23,7 @@ public class Plane implements Geometry {
      */
     public Plane(Point x, Point y, Point z) {
         // To be implemented
-        this.pointOnPlane = null; // Temporary implementation
+        this.pointOnPlane = x; // Temporary implementation
         this.normalVector = null; // Temporary implementation
     }
 
@@ -35,7 +35,7 @@ public class Plane implements Geometry {
      */
     public Plane(Point pointOnPlane, Vector normalVector) {
         this.pointOnPlane = pointOnPlane;
-        this.normalVector = normalVector;
+        this.normalVector = normalVector.normalize();
     }
 
     /**
