@@ -100,13 +100,18 @@ class VectorTests {
         Vector vec1 = new Vector(1, 0, 0);
         Vector vec2 = new Vector(1, 1, 0);
 
-        // TC01: ensure that the addition of two vectors is calculated correctly
-        assertEquals(new Vector(2, 1, 0), vec1.add(vec2), "add() wrong result");
+        // TC01: ensure that the addition of two vectors with sharp angle is calculated correctly
+        assertEquals(new Vector(2, 1, 0), vec1.add(vec2), "add() wrong result in sharp angle");
+
+        vec2 = new Vector(-1, 1, 0);
+
+        // TC02: ensure that the addition of two vectors with obtuse angle is calculated correctly
+        assertEquals(new Vector(0, 1, 0), vec1.add(vec2), "add() wrong result in obtuse angle");
 
         // =============== Boundary Values Tests ==================
         final Vector vec3 = new Vector(-1, 0, 0);
 
-        // TC2: test if add for same size with opposite directions throw an exception of zero vector
+        // TC3: test if add for same size with opposite directions throw an exception of zero vector
         assertThrows(IllegalArgumentException.class, () -> vec1.add(vec3),
                 "add() for opposite directions case doesn't throw an exception");
     }
@@ -118,8 +123,13 @@ class VectorTests {
         final Vector vec1 = new Vector(1, 1, 0);
         final Vector vec2 = new Vector(1, 0, 0);
 
-        // TC01: ensure that the subtraction of two vectors is calculated correctly
-        assertEquals(new Vector(0, 1, 0), vec1.subtract(vec2), "subtract() wrong result");
+        // TC01: ensure that the subtraction of two vectors with sharp angle is calculated correctly
+        assertEquals(new Vector(0, 1, 0), vec1.subtract(vec2), "subtract() wrong result in sharp angle");
+
+        Vector vec3 = new Vector(-1, 1, 0);
+
+        // TC02: ensure that the subtraction of two vectors with obtuse angle is calculated correctly
+        assertEquals(new Vector(2, -1, 0), vec2.subtract(vec3), "subtract() wrong result in obtuse angle");
 
         // =============== Boundary Values Tests ==================
 
@@ -157,22 +167,27 @@ class VectorTests {
     @Test
     void testDotProduct() {
         // ============ Equivalence Partitions Tests ==============
-        Vector vec1 = new Vector(1, 2, 3);
-        Vector vec2 = new Vector(3, 2, 1);
+        Vector vec1 = new Vector(2, 3, 0);
+        Vector vec2 = new Vector(1, 1, 0);
 
-        // TC01: ensure that the dot product of two vectors is calculated correctly
-        assertEquals(10.0, vec1.dotProduct(vec2), DELTA, "dotProduct() wrong result");
+        // TC01: ensure that the dot product of two vectors with sharp angle is calculated correctly
+        assertEquals(5.0, vec1.dotProduct(vec2), DELTA, "dotProduct() wrong result in sharp angle");
+
+        vec1 = new Vector(-1, 0.5, 0);
+
+        // TC02: ensure that the dot product of two vectors with obtuse angle is calculated correctly
+        assertEquals(-0.5, vec1.dotProduct(vec2), DELTA, "dotProduct() wrong result in obtuse angle");
 
         // =============== Boundary Values Tests ==================
         vec1 = new Vector(4, 0, 0);
         vec2 = new Vector(0, 3, 0);
 
-        // TC02: ensure that the dot product of two orthogonal vectors is 0
+        // TC03: ensure that the dot product of two orthogonal vectors is 0
         assertEquals(0, vec1.dotProduct(vec2), DELTA, "dotProduct() wrong result in orthogonal vectors");
         vec1 = new Vector(1, 0, 0);
         vec2 = new Vector(3, 4, 5);
 
-        // TC03: ensure that the dot product of unit vector is calculated correctly
+        // TC04: ensure that the dot product of unit vector is calculated correctly
         assertEquals(3.0, vec1.dotProduct(vec2), DELTA, "dotProduct() wrong result in unit vector");
     }
 
@@ -183,24 +198,31 @@ class VectorTests {
     @Test
     void testCrossProduct() {
         // ============ Equivalence Partitions Tests ==============
-        Vector vec1 = new Vector(1, 2, 3);
-        Vector vec2 = new Vector(3, 2, 1);
+        final Vector vec1 = new Vector(1, 1, 0);
+        Vector vec2 = new Vector(2, 3, 0);
 
-        // TC01: ensure that the cross product of two vectors is calculated correctly
-        assertEquals(new Vector(-4, 8, -4), vec1.crossProduct(vec2), "crossProduct() wrong result");
+        // TC01: ensure that the cross product of two vectors with sharp angle is calculated correctly
+        assertEquals(new Vector(0, 0, 1), vec1.crossProduct(vec2), "crossProduct() wrong result in sharp angle");
+
+        vec2 = new Vector(-1, 0.5, 0);
+
+        // TC02: ensure that the cross product of two vectors with obtuse angle is calculated correctly
+        assertEquals(new Vector(0, 0, 1.5), vec1.crossProduct(vec2), "crossProduct() wrong result in obtuse angle");
 
         // =============== Boundary Values Tests ==================
         final Vector vec3 = new Vector(4, 0, 0);
         final Vector vec4 = new Vector(1, 0, 0);
 
-        // TC02: test if crossProduct() for parallel vectors throw an exception of zero vector
+        // TC03: test if crossProduct() for parallel vectors throw an exception of zero vector
         assertThrows(IllegalArgumentException.class, () -> vec3.crossProduct(vec4),
                 "crossProduct() for parallel vectors doesn't throw an exception");
 
-        vec2 = new Vector(0, 2, 0);
+        final Vector vec5 = new Vector(-2, -2, 0);
 
-        // TC03: ensure that the cross product of two orthogonal vectors is calculated correctly
-        assertEquals(new Vector(0, 0, 8), vec3.crossProduct(vec2), "crossProduct() wrong result in orthogonal vectors case");
+        // TC04: ensure that the cross product of two vectors with opposite directions throw an exception of zero vector
+        assertThrows(IllegalArgumentException.class, () -> vec1.crossProduct(vec5),
+                "crossProduct() for vectors with opposite directions doesn't throw an exception");
+
     }
 
 
@@ -216,7 +238,7 @@ class VectorTests {
         assertEquals(1.0, vec1.length(), DELTA, "normalize() did not produce a unit vector");
         Vector vec2 = new Vector(4.5, 6, 0).normalize();
 
-        // TC02: ensure that the normalization of two vectors in the same diraction gives the same vector
+        // TC02: ensure that the normalization of two vectors in the same direction gives the same vector
         assertEquals(vec1, vec2, "normalize() did not produce the same vector for different lengths");
 
     }

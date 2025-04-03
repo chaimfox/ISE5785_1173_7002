@@ -31,18 +31,15 @@ public class Tube extends RadialGeometry {
      */
     @Override
     public Vector getNormal(Point pointOnSurface) {
-        Vector normal;
         Vector vec = pointOnSurface.subtract(axis.getHead()); // Vector from the axis to the point
         double t = axis.getDirection().dotProduct(vec);
 
         // if (p-p0) is orthogonal to the axis direction
         if (t == 0) {
-            normal = pointOnSurface.subtract(axis.getHead());
-            return normal.normalize();
+            return pointOnSurface.subtract(axis.getHead()).normalize();
         }
-        Point o = axis.getHead().add(axis.getDirection().scale(t));
-        normal = pointOnSurface.subtract(o);
-        return normal.normalize();
 
+        Point o = axis.getHead().add(axis.getDirection().scale(t));
+        return pointOnSurface.subtract(o).normalize();
     }
 }

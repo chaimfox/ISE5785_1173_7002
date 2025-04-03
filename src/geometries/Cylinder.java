@@ -53,15 +53,13 @@ public class Cylinder extends Tube {
 
         // Check if the point is on the first base
         Vector firstCenterToPoint = pointOnSurface.subtract(firstBaseCenter);
-        double t0 = firstCenterToPoint.dotProduct(dir);
-        if (t0 == 0) {
+        if (firstCenterToPoint.dotProduct(dir) == 0) {
             return dir.scale(-1);
         }
 
         // Check if the point is on the second base
         Vector secondCenterToPoint = pointOnSurface.subtract(secondBaseCenter);
-        double t1 = secondCenterToPoint.dotProduct(dir);
-        if (t1 == 0) {
+        if (secondCenterToPoint.dotProduct(dir) == 0) {
             return dir;
         }
 
