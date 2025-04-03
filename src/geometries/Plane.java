@@ -16,15 +16,16 @@ public class Plane extends Geometry {
 
     /**
      * Constructs a plane passing through three points.
-     *
-     * @param x The first point.
-     * @param y The second point.
-     * @param z The third point.
+     * Calculates the normal vector using the cross product of two vectors formed by the points.
+     * @param a The first point.
+     * @param b The second point.
+     * @param c The third point.
      */
-    public Plane(Point x, Point y, Point z) {
-        // To be implemented
-        this.pointOnPlane = x; // Temporary implementation
-        this.normalVector = null; // Temporary implementation
+    public Plane(Point a, Point b, Point c) {
+        this.pointOnPlane = a;
+        Vector v1 = b.subtract(a);
+        Vector v2 = c.subtract(a);
+        this.normalVector = v1.crossProduct(v2).normalize();
     }
 
     /**

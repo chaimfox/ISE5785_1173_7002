@@ -10,20 +10,23 @@ import primitives.Vector;
  */
 public class Cylinder extends Tube {
 
-    /** The height of the cylinder. */
+    /**
+     * The height of the cylinder.
+     */
     private final double height;
 
     /**
      * Constructs a new cylinder with the specified height, axis ray, and radius.
      *
-     * @param height The height of the cylinder.
+     * @param height  The height of the cylinder.
      * @param axisRay The ray that defines the axis of the cylinder.
-     * @param radius The radius of the cylinder.
+     * @param radius  The radius of the cylinder.
      */
     public Cylinder(double height, Ray axisRay, double radius) {
         super(radius, axisRay);
         this.height = height;
     }
+
 
     /**
      * Returns the normal vector at the specified point on the surface of the cylinder.
@@ -33,6 +36,37 @@ public class Cylinder extends Tube {
      */
     @Override
     public Vector getNormal(Point pointOnSurface) {
-        return null; // Temporary implementation
+
+        Point firstBaseCenter = axis.getHead();
+        Vector dir = axis.getDirection();
+        Point secondBaseCenter = firstBaseCenter.add(dir.scale(height));
+
+        // If the point is at the center of first base, return the opposite of the direction vector
+        if (pointOnSurface.equals(firstBaseCenter)) {
+            return dir.scale(-1);
+        }
+
+        // If the point is at the center of the second base, return the direction vector
+        if (pointOnSurface.equals(secondBaseCenter)){
+            return dir;
+        }
+
+        // Check if the point is on the first base
+        Vector firstCenterToPoint = pointOnSurface.subtract(firstBaseCenter);
+        double t0 = firstCenterToPoint.dotProduct(dir);
+        if (t0 == 0) {
+            return dir.scale(-1);
+        }
+
+        // Check if the point is on the second base
+        Vector secondCenterToPoint = pointOnSurface.subtract(secondBaseCenter);
+        double t1 = secondCenterToPoint.dotProduct(dir);
+        if (t1 == 0) {
+            return dir;
+        }
+
+        // If the point is on the lateral surface, delegate to Tube's normal calculation
+        return super.getNormal(pointOnSurface);
     }
+
 }

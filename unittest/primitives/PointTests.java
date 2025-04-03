@@ -12,6 +12,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PointTests {
 
+    /**
+     * Delta value for accuracy when comparing the numbers of type 'double' in
+     * assertEquals
+     */
     private static final double DELTA = 0.000001;
 
     /**
@@ -35,15 +39,16 @@ class PointTests {
     @Test
     void testSubtract() {
         // ============ Equivalence Partitions Tests ==============
-        Point p1 = new Point(1, 2, 3);
+        final Point p1 = new Point(1, 2, 3);
         Point p2 = new Point(4, 5, 6);
 
-        // TC02: Test that subtract works for a Point and creates a Correct Vector
+        // TC01: Test that subtract works for a Point and creates a Correct Vector
         assertEquals(new Vector(3, 3, 3), p2.subtract(p1), "subtract() wrong result");
 
         // =============== Boundary Values Tests ==================
-        // TC03: Test that subtract works for the same point
-        assertEquals(0, p1.subtract(p1).length(), DELTA, "subtract() wrong result on the same point");
+        // TC02: test if subtract() for 2 identical points throw an exception of zero vector
+        assertThrows(IllegalArgumentException.class, () -> p1.subtract(p1),
+                "subtract() for 2 identical points doesn't throw an exception");
     }
 
 
@@ -59,7 +64,7 @@ class PointTests {
         assertEquals(5.0, p1.distance(p2), DELTA, "distance() wrong result");
 
         // =============== Boundary Values Tests ==================
-        // TC04: Test that distance works for the same point
+        // TC01: Test that distance works for the same point
         assertEquals(0, p1.distance(p1), DELTA, "distance() wrong result for the same point");
     }
 
@@ -73,11 +78,11 @@ class PointTests {
         Point p1 = new Point(5, 7, 2);
         Point p2 = new Point(2, 3, 2);
 
-        // TC05: Test that distanceSquared works for a Point
+        // TC01: Test that distanceSquared works for a Point
         assertEquals(25.0, p1.distanceSquared(p2), DELTA, "distanceSquared() wrong result");
 
         // =============== Boundary Values Tests ==================
-        // TC06: Test that distanceSquared works for the same point
+        // TC02: Test that distanceSquared works for the same point
         assertEquals(0, p1.distanceSquared(p1), DELTA,"distanceSquared() wrong result for the same point");
 
     }

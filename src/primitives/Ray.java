@@ -23,6 +23,24 @@ public class Ray {
     }
 
     /**
+     * Returns the starting point (head) of the ray.
+     *
+     * @return The starting point (head) of the ray.
+     */
+    public Point getHead() {
+        return head;
+    }
+
+    /**
+     * Returns the direction vector of the ray.
+     *
+     * @return The direction vector of the ray.
+     */
+    public Vector getDirection() {
+        return direction;
+    }
+
+    /**
      * Checks if this ray is equal to another object.
      *
      * @param obj The object to compare to.
