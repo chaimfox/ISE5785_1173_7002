@@ -8,7 +8,7 @@ import primitives.Vector;
  * Classes that implement this interface must provide a method to calculate
  * the normal vector at a specified point on the surface of the shape.
  */
-public abstract class Geometry {
+public abstract class Geometry implements Intersectable {
 
     /**
      * Calculates the normal vector at the specified point on the surface of the geometry.

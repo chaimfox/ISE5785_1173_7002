@@ -1,22 +1,32 @@
 package geometries;
 
 import primitives.Point;
+import primitives.Ray;
 import primitives.Vector;
+
+import java.util.List;
+
+import static primitives.Util.*;
 
 /**
  * Represents a plane in three-dimensional space.
  */
 public class Plane extends Geometry {
 
-    /** A point on the plane. */
+    /**
+     * A point on the plane.
+     */
     private final Point pointOnPlane;
 
-    /** The normal vector to the plane. */
+    /**
+     * The normal vector to the plane.
+     */
     private final Vector normalVector;
 
     /**
      * Constructs a plane passing through three points.
      * Calculates the normal vector using the cross product of two vectors formed by the points.
+     *
      * @param a The first point.
      * @param b The second point.
      * @param c The third point.
@@ -57,5 +67,24 @@ public class Plane extends Geometry {
      */
     public Vector getNormal() {
         return normalVector;
+    }
+
+    public List<Point> findIntersections(Ray ray) {
+
+        // Calculate the denominator
+        double denominator = normalVector.dotProduct(ray.getDirection());
+        if (isZero(denominator)) {
+            return null; // The ray is parallel to the plane
+        }
+
+        // Calculate the numerator
+        double t = alignZero(normalVector.dotProduct(pointOnPlane.subtract(ray.getHead())) / denominator);
+        if (t <= 0) {
+            return null; // The intersection point is behind the ray's head
+        }
+
+        // Calculate the intersection point
+        Point intersectionPoint = ray.getPoint(t);
+        return List.of(intersectionPoint); // Return the intersection point as a list
     }
 }

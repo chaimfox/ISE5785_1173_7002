@@ -5,6 +5,7 @@ import static primitives.Util.isZero;
 import java.util.List;
 
 import primitives.Point;
+import primitives.Ray;
 import primitives.Vector;
 
 /**
@@ -82,4 +83,14 @@ public class Polygon extends Geometry {
    @Override
    public Vector getNormal(Point point) { return plane.getNormal(); }
 
+   /**
+    * Finds the intersection points between a ray and the object implementing this interface.
+    *
+    * @param ray The ray to check for intersections with.
+    * @return A list of intersection points. If there are no intersections, an empty list is returned.
+    */
+   @Override
+   public List<Point> findIntersections(Ray ray) {
+      return List.of();
+   }
 }
