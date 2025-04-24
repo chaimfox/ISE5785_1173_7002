@@ -1,5 +1,6 @@
 package geometries;
 
+import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
 import java.util.List;
@@ -84,13 +85,44 @@ public class Polygon extends Geometry {
    public Vector getNormal(Point point) { return plane.getNormal(); }
 
    /**
-    * Finds the intersection points between a ray and the object implementing this interface.
+    * Finds the intersection points between a given ray and the Polygon.
     *
-    * @param ray The ray to check for intersections with.
-    * @return A list of intersection points. If there are no intersections, an empty list is returned.
+    * @param ray the ray to intersect with the Polygon
+    * @return a list of intersection points, or null if there are no intersections
     */
    @Override
    public List<Point> findIntersections(Ray ray) {
-      return List.of();
+
+      // Check if the ray intersects the plane of the polygon
+      List<Point> planeIntersections = plane.findIntersections(ray);
+      if (planeIntersections == null)
+         return null;
+
+      // Retrieve the direction vector and head point of the ray
+      Vector rayDirection = ray.getDirection();
+      Point rayPoint = ray.getHead();
+
+      // Loop through all vertices and edges of the polygon
+      Boolean positive = null;
+      for (int i = 0; i < size; i++) {
+         Point p1 = vertices.get(i);
+         Point p2 = vertices.get((i + 1) % size);
+
+         Vector edgeVector1 = p1.subtract(rayPoint);
+         Vector edgeVector2 = p2.subtract(rayPoint);
+         // Vector toIntersection = intersectionPoint.subtract(p1);
+         Vector normal = edgeVector1.crossProduct(edgeVector2).normalize();
+
+         double dotProduct = alignZero(normal.dotProduct(rayDirection));
+         if (dotProduct == 0)
+            return null; // Intersection point is on the edge considered outside the polygon
+
+         if (positive == null) {
+            positive = dotProduct > 0;
+         } else if (positive != dotProduct > 0)
+            return null; // the sing are not the sane for all vertices
+      }
+      // Return the intersection point with the plane of the polygon
+      return planeIntersections;
    }
 }

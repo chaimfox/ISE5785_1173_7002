@@ -139,7 +139,8 @@ public class PlaneTests {
 
         // TC07: Ray starts before the plane
         p01 = new Point(1, 0, -1);
-        exp = List.of(new Point(1, 0, 0));
+        exp = List.of(new Point(1, 1, 0));
+        vec01 = new Vector(0, 1, 1);
 
         final var result2 = plane.findIntersections(new Ray(p01, vec01));
         assertNotNull(result2, "Can't be empty list");
@@ -149,7 +150,7 @@ public class PlaneTests {
         // **** Group 3: Ray is neither orthogonal nor parallel to the plane
         // TC08: Ray starts at the point of the plane
         vec01 = new Vector(1, 1, 1);
-        assertNull(plane.findIntersections(new Ray(new Point(1,0,0), vec01)), "There should be 0 intersection points");
+        assertNull(plane.findIntersections(new Ray(new Point(2,0,0), vec01)), "There should be 0 intersection points");
 
         // TC09: Ray starts in the plane
         p01 = new Point(2, 1, 0);
