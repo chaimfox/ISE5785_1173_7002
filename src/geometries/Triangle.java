@@ -23,37 +23,47 @@ public class Triangle extends Polygon {
     }
 
     public List<Point> findIntersections(Ray ray) {
-        // Find the intersections with the triangle's plane
-        List<Point> intersections = plane.findIntersections(ray);
-        if (intersections == null) {
+        var intersections = plane.findIntersections(ray);
+        // Check if the ray intersects the plane of the triangle
+        if (intersections == null)
             return null;
-        }
 
-        // Check if the intersection point is inside the triangle
-        Point intersectionPoint = intersections.get(0);
-        if (isPointInTriangle(intersectionPoint)) {
-            return List.of(intersectionPoint);
-        }
-        return null;
+        // Retrieve the vertices of the triangle
+        Point p0 = vertices.getFirst();
+        Point p1 = vertices.get(1);
+        Point p2 = vertices.getLast();
+
+        // Retrieve the direction vector and head point of the ray
+        Vector rayDirection = ray.getDirection();
+        Point rayPoint = ray.getHead();
+
+        // Calculate vectors representing edges of the triangle
+        Vector v1 = p0.subtract(rayPoint);
+        Vector v2 = p1.subtract(rayPoint);
+        // Calculate normal vectors to the triangle's edges
+        Vector n1 = v1.crossProduct(v2).normalize();
+        // Calculate dot products between the normal vectors and the ray direction
+        double d1 = Util.alignZero(n1.dotProduct(rayDirection));
+        // Check if the ray does not intersects the triangle.
+        if (d1 == 0)
+            return null;
+
+        Vector v3 = p2.subtract(rayPoint);
+        Vector n2 = v2.crossProduct(v3).normalize();
+        double d2 = Util.alignZero(n2.dotProduct(rayDirection));
+        // Check if the ray does not intersects the triangle
+        if (d1 * d2 <= 0)
+            return null;
+
+        Vector n3 = v3.crossProduct(v1).normalize();
+        double d3 = Util.alignZero(n3.dotProduct(rayDirection));
+        // Check if the ray does not intersects the triangle
+        if (d1 * d3 <= 0)
+            return null;
+
+        return intersections;
     }
 
-    private boolean isPointInTriangle(Point p) {
-        // וקטורים מהנקודה לקודקודי המשולש
-        Vector v1 = vertices.get(0).subtract(p);
-        Vector v2 = vertices.get(1).subtract(p);
-        Vector v3 = vertices.get(2).subtract(p);
-
-        // מכפלות וקטוריות של וקטורים סמוכים
-        Vector cross1 = v1.crossProduct(v2);
-        Vector cross2 = v2.crossProduct(v3);
-        Vector cross3 = v3.crossProduct(v1);
-
-        // בדיקה אם לכל המכפלות הווקטוריות יש אותו סימן
-        double dot12 = cross1.dotProduct(cross2);
-        double dot23 = cross2.dotProduct(cross3);
-
-        return dot12 > 0 && dot23 > 0;
-    }
 }
 
 
