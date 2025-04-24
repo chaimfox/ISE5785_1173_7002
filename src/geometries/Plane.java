@@ -69,6 +69,12 @@ public class Plane extends Geometry {
         return normalVector;
     }
 
+    /**
+     * Returns a list of intersection points of a ray with the plane.
+     *
+     * @param ray The ray to check for intersections.
+     * @return A list of intersection points, or null if there are no intersections.
+     */
     public List<Point> findIntersections(Ray ray) {
 
         // Calculate the denominator

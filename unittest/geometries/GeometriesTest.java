@@ -33,7 +33,7 @@ class GeometriesTest {
         assertEquals(3, result.size(), "There should be three intersections");
 
         // =============== Boundary Values Tests ==================
-        // TC11: No geometries exist (0 pSoints)
+        // TC11: No geometries exist (0 points)
         Geometries emptyGeometries = new Geometries();
         assertNull(emptyGeometries.findIntersections(new Ray(new Point(0, 0, 0), new Vector(1, 1, 1))),
                 "There shouldn't be any intersections");

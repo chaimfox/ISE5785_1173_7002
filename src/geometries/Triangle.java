@@ -7,6 +7,8 @@ import primitives.Vector;
 
 import java.util.List;
 
+import static primitives.Util.*;
+
 /**
  * Represents a triangle in three-dimensional space.
  */
@@ -23,6 +25,13 @@ public class Triangle extends Polygon {
         super(new Point[]{p1, p2, p3});
     }
 
+
+    /**
+     * Finds the intersection points of a ray with the triangle.
+     *
+     * @param ray The ray to check for intersections.
+     * @return A list of intersection points, or null if there are no intersections.
+     */
     public List<Point> findIntersections(Ray ray) {
         var intersections = plane.findIntersections(ray);
         // Check if the ray intersects the plane of the triangle
@@ -44,21 +53,21 @@ public class Triangle extends Polygon {
         // Calculate normal vectors to the triangle's edges
         Vector n1 = v1.crossProduct(v2).normalize();
         // Calculate dot products between the normal vectors and the ray direction
-        double d1 = Util.alignZero(n1.dotProduct(rayDirection));
-        // Check if the ray does not intersects the triangle.
+        double d1 = alignZero(n1.dotProduct(rayDirection));
+        // Check if the ray does not intersect the triangle.
         if (d1 == 0)
             return null;
 
         Vector v3 = p2.subtract(rayPoint);
         Vector n2 = v2.crossProduct(v3).normalize();
-        double d2 = Util.alignZero(n2.dotProduct(rayDirection));
-        // Check if the ray does not intersects the triangle
+        double d2 = alignZero(n2.dotProduct(rayDirection));
+        // Check if the ray does not intersect the triangle
         if (d1 * d2 <= 0)
             return null;
 
         Vector n3 = v3.crossProduct(v1).normalize();
-        double d3 = Util.alignZero(n3.dotProduct(rayDirection));
-        // Check if the ray does not intersects the triangle
+        double d3 = alignZero(n3.dotProduct(rayDirection));
+        // Check if the ray does not intersect the triangle
         if (d1 * d3 <= 0)
             return null;
 
@@ -81,24 +90,3 @@ public class Triangle extends Polygon {
 
 
 
-
-
-
-
-
-
-
-
-
-
-/*
-List<Point> intersections = super.findIntersections(ray);
-        if (intersections == null || intersections.isEmpty()) {
-            return null;
-        }
-        Point intersectionPoint = intersections.get(0);
-        if (intersectionPoint.equals(vertices[0]) || intersectionPoint.equals(vertices[1]) || intersectionPoint.equals(vertices[2])) {
-            return null;
-        }
-        return intersections;
- */
