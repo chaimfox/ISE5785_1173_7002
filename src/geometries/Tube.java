@@ -5,8 +5,6 @@ import primitives.Ray;
 import java.util.List;
 import primitives.Vector;
 
-import java.util.ArrayList;
-
 /**
  * Represents a tube in three-dimensional space.
  */
