@@ -76,6 +76,9 @@ public class Plane extends Geometry {
      * @return A list of intersection points, or null if there are no intersections.
      */
     public List<Point> findIntersections(Ray ray) {
+        if (ray.getHead().equals(pointOnPlane)) {
+            return null; // The ray's head is on the plane
+        }
 
         // Calculate the denominator
         double denominator = normalVector.dotProduct(ray.getDirection());
