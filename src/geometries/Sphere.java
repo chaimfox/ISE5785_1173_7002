@@ -48,6 +48,10 @@ public class Sphere extends RadialGeometry {
      * @return A list of intersection points, or null if there are no intersections.
      */
     public List<Point> findIntersections(Ray ray) {
+        if (ray.getHead().equals(centerPoint)) {
+            // If the ray's head is at the center of the sphere, return one intersection point
+            return List.of(ray.getPoint(radius));
+        }
         // Create a vector from the ray's head to the sphere's center
         Vector u = centerPoint.subtract(ray.getHead());
         // Calculate the projection of u onto the ray's direction
