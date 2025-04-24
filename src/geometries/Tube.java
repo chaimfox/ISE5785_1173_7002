@@ -2,7 +2,10 @@ package geometries;
 
 import primitives.Point;
 import primitives.Ray;
+import java.util.List;
 import primitives.Vector;
+
+import java.util.ArrayList;
 
 /**
  * Represents a tube in three-dimensional space.
@@ -41,5 +44,10 @@ public class Tube extends RadialGeometry {
 
         Point o = axis.getHead().add(axis.getDirection().scale(t));
         return pointOnSurface.subtract(o).normalize();
+    }
+
+    @Override
+    public List<Point> findIntersections(Ray ray) {
+        return new ArrayList<>(); // only for the function to work now
     }
 }
