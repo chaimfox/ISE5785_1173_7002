@@ -102,6 +102,11 @@ public class Polygon extends Geometry {
       Vector rayDirection = ray.getDirection();
       Point rayPoint = ray.getHead();
 
+      for(Point p : vertices) {
+         if (p.equals(rayPoint))
+            return null; // The ray's head is one of the polygon's vertices
+      }
+
       // Loop through all vertices and edges of the polygon
       Boolean positive = null;
       for (int i = 0; i < size; i++) {

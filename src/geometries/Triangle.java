@@ -47,6 +47,9 @@ public class Triangle extends Polygon {
         Vector rayDirection = ray.getDirection();
         Point rayPoint = ray.getHead();
 
+        if (p0.equals(rayPoint) || p1.equals(rayPoint) || p2.equals(rayPoint))
+            return null; // The ray's head is one of the triangle's vertices
+
         // Calculate vectors representing edges of the triangle
         Vector v1 = p0.subtract(rayPoint);
         Vector v2 = p1.subtract(rayPoint);
