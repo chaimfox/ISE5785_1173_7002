@@ -76,6 +76,11 @@ public class Camera implements Cloneable {
         return distance;
     }
 
+    /**
+     * Camera constructor
+     */
+    private Camera() {
+    }
 
     /**
      * Camera builder
@@ -111,6 +116,29 @@ public class Camera implements Cloneable {
         }
 
         /**
+         * Set the direction of the camera
+         *
+         * @param target the point to look at
+         * @param vUp    the up direction of the camera
+         *               (the vector from the camera to the up direction)
+         */
+        public Builder setDirection(Point target, Vector vUp) {
+            camera.vTo = target.subtract(camera.p0).normalize();
+            camera.vRight = camera.vTo.crossProduct(vUp).normalize();
+            camera.vUp = camera.vRight.crossProduct(camera.vTo).normalize();
+            return this;
+        }
+
+        /**
+         * Set the direction of the camera
+         *
+         * @param target the point to look at
+         */
+        public Builder setDirection(Point target) {
+            return setDirection(target,new Vector(0, 1, 0));
+        }
+
+        /**
          * Set the size of the view plane
          *
          * @param width  the width of the view plane
@@ -136,6 +164,10 @@ public class Camera implements Cloneable {
             }
             camera.distance = distance;
             return this;
+        }
+
+        public Builder setResolution(int nX, int nY) {
+            return null;
         }
 
         /**
@@ -184,11 +216,7 @@ public class Camera implements Cloneable {
         }
     }
 
-    /**
-     * Camera constructor
-     */
-    private Camera() {
-    }
+
 
     /**
      * Builder getter

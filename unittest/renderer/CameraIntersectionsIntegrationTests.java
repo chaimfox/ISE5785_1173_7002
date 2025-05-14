@@ -10,11 +10,15 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class RayIntersectionTest {
+/**
+ * Testing integration of constructRay with findIntersections.
+ */
+public class CameraIntersectionsIntegrationTests {
 
     private final Vector yAxis = new Vector(0, -1, 0);
     private final Vector zAxis = new Vector(0, 0, -1);
 
+    // building the camera.
     private final Camera.Builder cameraBuilder = Camera.getBuilder()
             .setDirection(zAxis, yAxis)
             .setVpDistance(1)
