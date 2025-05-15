@@ -1,8 +1,8 @@
 package scene;
 
 import geometries.Geometries;
-import primitives.Color;
 import lighting.AmbientLight;
+import primitives.Color;
 
 /**
  * Scene class represents a scene in the 3D space

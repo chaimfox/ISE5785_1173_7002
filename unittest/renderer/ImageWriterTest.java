@@ -12,7 +12,7 @@ class ImageWriterTest {
         assertDoesNotThrow(() -> {
             Color yellow = new Color(java.awt.Color.YELLOW);
             Color red = new Color(java.awt.Color.RED);
-            ImageWriter imageWriter = new ImageWriter("test", 801, 501);
+            ImageWriter imageWriter = new ImageWriter(801, 501);
             for (int i = 0; i <= 800; i++) {
                 for (int j = 0; j <= 500; j++) {
                     if (i % 50 == 0 || j % 50 == 0) {

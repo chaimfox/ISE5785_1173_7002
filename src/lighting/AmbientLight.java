@@ -13,6 +13,11 @@ public class AmbientLight {
     public final static AmbientLight NONE = new AmbientLight(Color.BLACK, 0.0);
     private final Color intensity;
 
+
+    public AmbientLight(Color ia) {
+        intensity = ia;
+    }
+
     /**
      * Constructor for AmbientLight
      * @param ia the intensity of the ambient light

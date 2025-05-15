@@ -1,22 +1,28 @@
 package primitives;
 
-import static primitives.Util.*;
+import java.util.List;
+
+import static primitives.Util.isZero;
 
 /**
  * Represents a ray in three-dimensional space.
  */
 public class Ray {
 
-    /** The starting point (head) of the ray. */
+    /**
+     * The starting point (head) of the ray.
+     */
     private final Point head;
 
-    /** The direction vector of the ray. */
+    /**
+     * The direction vector of the ray.
+     */
     private final Vector direction;
 
     /**
      * Constructs a new ray with the specified starting point and direction.
      *
-     * @param head The starting point (head) of the ray.
+     * @param head      The starting point (head) of the ray.
      * @param direction The direction vector of the ray.
      */
     public Ray(Point head, Vector direction) {
@@ -78,5 +84,28 @@ public class Ray {
             return head;
         }
         return head.add(direction.scale(t));
+    }
+
+    /**
+     * method to find the closest point to the head of the ray
+     *
+     * @param points list of points
+     * @return the closest point to the head of the ray
+     */
+    public Point findClosestPoint(List<Point> points) {
+        if (points == null || points.isEmpty()) {
+            return null;
+        }
+        Point closest = null;
+        double minDistance = Double.POSITIVE_INFINITY;
+
+        for (Point point : points) {
+            double distance = head.distance(point);
+            if (distance < minDistance) {
+                minDistance = distance;
+                closest = point;
+            }
+        }
+        return closest;
     }
 }

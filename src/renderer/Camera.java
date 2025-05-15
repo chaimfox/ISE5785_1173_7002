@@ -1,9 +1,15 @@
 package renderer;
 
 import primitives.*;
+import scene.Scene;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.MissingResourceException;
 
+import static primitives.Util.alignZero;
+import static primitives.Util.isZero;
+import static renderer.RayTracerBase.RayTracerType.*;
 
 /**
  * Camera class represents a camera in the 3D space
@@ -18,8 +24,16 @@ public class Camera implements Cloneable {
     private double height = 0d;
     private double distance = 0d;
 
+    private ImageWriter imageWriter;
+    private RayTracerBase rayTracer;
+
+    private int nX = 1;
+    private int nY = 1;
+
+
     /**
      * Camera getter
+     *
      * @return the location of the camera
      */
     public Point getP0() {
@@ -28,6 +42,7 @@ public class Camera implements Cloneable {
 
     /**
      * Camera getter
+     *
      * @return the up direction of the camera
      */
     public Vector getVUp() {
@@ -36,6 +51,7 @@ public class Camera implements Cloneable {
 
     /**
      * Camera getter
+     *
      * @return the direction of the camera
      */
     public Vector getVTo() {
@@ -44,6 +60,7 @@ public class Camera implements Cloneable {
 
     /**
      * Camera getter
+     *
      * @return the right direction of the camera
      */
     public Vector getVRight() {
@@ -52,6 +69,7 @@ public class Camera implements Cloneable {
 
     /**
      * Camera getter
+     *
      * @return the width of the view plane
      */
     public double getWidth() {
@@ -75,6 +93,25 @@ public class Camera implements Cloneable {
     public double getDistance() {
         return distance;
     }
+
+    /**
+     * Camera getter
+     *
+     * @return the number of rays in the grid for the depth of field
+     */
+    public int getNx() {
+        return nX;
+    }
+
+    /**
+     * Camera getter
+     *
+     * @return the number of rays in the grid for the depth of field
+     */
+    public int getNy() {
+        return nY;
+    }
+
 
     /**
      * Camera constructor
@@ -135,7 +172,7 @@ public class Camera implements Cloneable {
          * @param target the point to look at
          */
         public Builder setDirection(Point target) {
-            return setDirection(target,new Vector(0, 1, 0));
+            return setDirection(target, new Vector(0, 1, 0));
         }
 
         /**
@@ -166,8 +203,61 @@ public class Camera implements Cloneable {
             return this;
         }
 
+        /**
+         * Set the ray tracer
+         *
+         * @param type the ray tracer
+         * @return the camera builder
+         */
+        public Builder setRayTracer(Scene scene, RayTracerType type) {
+            if (type == RayTracerType.SIMPLE)
+                camera.rayTracer = new SimpleRayTracer(scene);
+            else
+                camera.rayTracer = null;
+            return this;
+        }
+
+
         public Builder setResolution(int nX, int nY) {
-            return null;
+            camera.nX = nX;
+            camera.nY = nY;
+            return this;
+        }
+
+
+        /**
+         * Set the image writer
+         *
+         * @param imageWriter the image writer
+         * @return the camera builder
+         */
+        public Builder setImageWriter(ImageWriter imageWriter) {
+            camera.imageWriter = imageWriter;
+            return this;
+        }
+
+
+        /**
+         * Set the number of rays in the grid for the depth of field
+         *
+         * @param n the number of rays in the grid
+         * @return the camera builder
+         */
+        public Builder setNx(int n) {
+            camera.nX = n;
+            return this;
+        }
+
+
+        /**
+         * Set the number of rays in the grid for the
+         *
+         * @param n the number of rays in the grid
+         * @return the camera builder
+         */
+        public Builder setNy(int n) {
+            camera.nY = n;
+            return this;
         }
 
         /**
@@ -179,18 +269,20 @@ public class Camera implements Cloneable {
             final String className = "Camera";
             final String description = "values not set: ";
 
-            if(camera.p0 == null)
+            if (camera.p0 == null)
                 throw new MissingResourceException(description, className, "p0");
-            if(camera.vUp == null)
+            if (camera.vUp == null)
                 throw new MissingResourceException(description, className, "vUp");
-            if(camera.vTo == null)
+            if (camera.vTo == null)
                 throw new MissingResourceException(description, className, "vTo");
-            if(camera.width == 0d)
+            if (camera.width == 0d)
                 throw new MissingResourceException(description, className, "width");
-            if(camera.height == 0d)
+            if (camera.height == 0d)
                 throw new MissingResourceException(description, className, "height");
-            if(camera.distance == 0d)
+            if (camera.distance == 0d)
                 throw new MissingResourceException(description, className, "distance");
+            if (camera.rayTracer == null)
+                setRayTracer(null, RayTracerType.SIMPLE);
 
             camera.vRight = camera.vTo.crossProduct(camera.vUp).normalize();
 
@@ -208,6 +300,18 @@ public class Camera implements Cloneable {
             if (camera.distance <= 0)
                 throw new IllegalArgumentException("distance from camera to view must be positive");
 
+            if (camera.nX <= 0)
+                throw new IllegalArgumentException("nX must be positive");
+
+            if (camera.nY <= 0)
+                throw new IllegalArgumentException("nY must be positive");
+
+            camera.imageWriter = new ImageWriter(camera.nX, camera.nY);
+
+            if(camera.rayTracer == null)
+                camera.rayTracer = new SimpleRayTracer(null);
+
+
             try {
                 return (Camera) camera.clone();
             } catch (CloneNotSupportedException e) {
@@ -215,7 +319,6 @@ public class Camera implements Cloneable {
             }
         }
     }
-
 
 
     /**
@@ -250,4 +353,66 @@ public class Camera implements Cloneable {
 
         return new Ray(p0, pIJ.subtract(p0).normalize());
     }
+
+
+    /**
+     * Render the image
+     */
+    public Camera renderImage() {
+        int nx = imageWriter.getNx();
+        int ny = imageWriter.getNy();
+
+        for (int i = 0; i < ny; i++) {
+            for (int j = 0; j < nx; j++) {
+                castRay(j, i);
+            }
+        }
+
+        return this;
+    }
+
+
+    /**
+     * Print a grid on the image
+     *
+     * @param interval the interval between the lines of the grid
+     * @param color    the color of the grid
+     */
+    public Camera printGrid(int interval, Color color) {
+        for (int i = 0; i < imageWriter.getNy(); i++) {
+            for (int j = 0; j < imageWriter.getNx(); j++) {
+                if (i % interval == 0 || j % interval == 0) {
+                    imageWriter.writePixel(j, i, color);
+                }
+            }
+        }
+        return this;
+    }
+
+
+    /**
+     * Write the image to a file
+     */
+    public Camera writeToImage(String pictureFileName) {
+        imageWriter.writeToImage(pictureFileName);
+        return this;
+    }
+
+
+    /**
+     * Cast a ray through a pixel
+     *
+
+     */
+    private void castRay(int x, int y) {
+        if(x < 0|| x >= nX || y < 0 || y >= nY)
+            throw new IllegalArgumentException("nx and ny must be positive");
+
+        Ray ray = constructRay(nX, nY, x, y);
+        Color c = rayTracer.traceRay(ray);
+        imageWriter.writePixel(x,y,c);
+    }
+
+
+
 }
