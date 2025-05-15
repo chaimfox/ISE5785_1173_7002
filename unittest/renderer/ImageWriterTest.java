@@ -22,6 +22,7 @@ class ImageWriterTest {
                     }
                 }
             }
+            imageWriter.writeToImage("image");
         }, "Failed to create image");
     }
 }

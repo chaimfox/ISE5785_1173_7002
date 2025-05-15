@@ -2,14 +2,7 @@ package renderer;
 
 import primitives.*;
 import scene.Scene;
-
-import java.util.LinkedList;
-import java.util.List;
 import java.util.MissingResourceException;
-
-import static primitives.Util.alignZero;
-import static primitives.Util.isZero;
-import static renderer.RayTracerBase.RayTracerType.*;
 
 /**
  * Camera class represents a camera in the 3D space
@@ -30,6 +23,11 @@ public class Camera implements Cloneable {
     private int nX = 1;
     private int nY = 1;
 
+    /**
+     * Camera constructor
+     */
+    private Camera() {
+    }
 
     /**
      * Camera getter
@@ -97,7 +95,7 @@ public class Camera implements Cloneable {
     /**
      * Camera getter
      *
-     * @return the number of rays in the grid for the depth of field
+     * @return number of pixels in the x direction
      */
     public int getNx() {
         return nX;
@@ -106,18 +104,97 @@ public class Camera implements Cloneable {
     /**
      * Camera getter
      *
-     * @return the number of rays in the grid for the depth of field
+     * @return number of pixels in the y direction
      */
     public int getNy() {
         return nY;
     }
 
+    /**
+     * construct a ray through a pixel
+     *
+     * @param nX the number of pixels in the x direction
+     * @param nY the number of pixels in the y direction
+     * @param j  the x index of the pixel
+     * @param i  the y index of the pixel
+     * @return the ray that passes through the pixel
+     */
+    public Ray constructRay(int nX, int nY, int j, int i) {
+        Point pIJ = p0;
+        double yI = -(i - (nY - 1) / 2d) * height / nY;
+        double xJ = (j - (nX - 1) / 2d) * width / nX;
+
+        //check if xJ or yI are not zero, so we will not add zero vector
+        if (!Util.isZero(xJ)) pIJ = pIJ.add(vRight.scale(xJ));
+        if (!Util.isZero(yI)) pIJ = pIJ.add(vUp.scale(yI));
+
+        // we need to move the point in the direction of vTo by distance
+        pIJ = pIJ.add(vTo.scale(distance));
+
+        return new Ray(p0, pIJ.subtract(p0).normalize());
+    }
+
 
     /**
-     * Camera constructor
+     * Set the image writer, use castRay to write the pixels
+     *
+     * @return the camera
      */
-    private Camera() {
+    public Camera renderImage() {
+        int nx = imageWriter.getNx();
+        int ny = imageWriter.getNy();
+        for (int i = 0; i < ny; i++) {
+            for (int j = 0; j < nx; j++) {
+                castRay(j, i);
+            }
+        }
+        return this;
     }
+
+
+    /**
+     * Print a grid on the image
+     *
+     * @param interval the interval between the lines of the grid
+     * @param color    the color of the grid
+     * @return         the camera
+     */
+    public Camera printGrid(int interval, Color color) {
+        for (int i = 0; i < imageWriter.getNy(); i++) {
+            for (int j = 0; j < imageWriter.getNx(); j++) {
+                if (i % interval == 0 || j % interval == 0) {
+                    imageWriter.writePixel(j, i, color);
+                }
+            }
+        }
+        return this;
+    }
+
+
+    /**
+     * Write the image to a file
+     *
+     * @param pictureFileName the name of the file
+     * @return the camera
+     */
+    public Camera writeToImage(String pictureFileName) {
+        imageWriter.writeToImage(pictureFileName);
+        return this;
+    }
+
+
+    /**
+     * Cast a ray through a pixel
+     * @param x the x index of the pixel
+     * @param y the y index of the pixel
+     */
+    private void castRay(int x, int y) {
+        if(x < 0|| x >= nX || y < 0 || y >= nY)
+            throw new IllegalArgumentException("x and y must be inside the image bounds");
+
+        imageWriter.writePixel(x,y,rayTracer.traceRay(constructRay(nX, nY, x, y)));
+    }
+
 
     /**
      * Camera builder
@@ -288,6 +365,7 @@ public class Camera implements Cloneable {
                 throw new MissingResourceException(description, className, "height");
             if (camera.distance == 0d)
                 throw new MissingResourceException(description, className, "distance");
+
             if (camera.rayTracer == null)
                 setRayTracer(null, RayTracerType.SIMPLE);
 
@@ -327,7 +405,6 @@ public class Camera implements Cloneable {
         }
     }
 
-
     /**
      * Builder getter
      *
@@ -336,94 +413,5 @@ public class Camera implements Cloneable {
     public static Builder getBuilder() {
         return new Builder();
     }
-
-    /**
-     * construct a ray through a pixel
-     *
-     * @param nX the number of pixels in the x direction
-     * @param nY the number of pixels in the y direction
-     * @param j  the x index of the pixel
-     * @param i  the y index of the pixel
-     * @return the ray that passes through the pixel
-     */
-    public Ray constructRay(int nX, int nY, int j, int i) {
-        Point pIJ = p0;
-        double yI = -(i - (nY - 1) / 2d) * height / nY;
-        double xJ = (j - (nX - 1) / 2d) * width / nX;
-
-        //check if xJ or yI are not zero, so we will not add zero vector
-        if (!Util.isZero(xJ)) pIJ = pIJ.add(vRight.scale(xJ));
-        if (!Util.isZero(yI)) pIJ = pIJ.add(vUp.scale(yI));
-
-        // we need to move the point in the direction of vTo by distance
-        pIJ = pIJ.add(vTo.scale(distance));
-
-        return new Ray(p0, pIJ.subtract(p0).normalize());
-    }
-
-
-    /**
-     * Set the image writer
-     *
-     * return the camera
-     */
-    public Camera renderImage() {
-        int nx = imageWriter.getNx();
-        int ny = imageWriter.getNy();
-
-        for (int i = 0; i < ny; i++) {
-            for (int j = 0; j < nx; j++) {
-                castRay(j, i);
-            }
-        }
-
-        return this;
-    }
-
-
-    /**
-     * Print a grid on the image
-     *
-     * @param interval the interval between the lines of the grid
-     * @param color    the color of the grid
-     */
-    public Camera printGrid(int interval, Color color) {
-        for (int i = 0; i < imageWriter.getNy(); i++) {
-            for (int j = 0; j < imageWriter.getNx(); j++) {
-                if (i % interval == 0 || j % interval == 0) {
-                    imageWriter.writePixel(j, i, color);
-                }
-            }
-        }
-        return this;
-    }
-
-
-    /**
-     * Write the image to a file
-     *
-     * @param pictureFileName the name of the file
-     * @return the camera
-     */
-    public Camera writeToImage(String pictureFileName) {
-        imageWriter.writeToImage(pictureFileName);
-        return this;
-    }
-
-
-    /**
-     * Cast a ray through a pixel
-     * @param x the x index of the pixel
-     */
-    private void castRay(int x, int y) {
-        if(x < 0|| x >= nX || y < 0 || y >= nY)
-            throw new IllegalArgumentException("nx and ny must be positive");
-
-        Ray ray = constructRay(nX, nY, x, y);
-        Color c = rayTracer.traceRay(ray);
-        imageWriter.writePixel(x,y,c);
-    }
-
-
 
 }

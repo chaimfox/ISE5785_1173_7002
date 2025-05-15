@@ -8,18 +8,6 @@ import scene.Scene;
  * Abstract class for ray tracing
  */
 public abstract class RayTracerBase {
-
-    /**
-     * Ray tracer types
-     */
-    public enum RayTracerType {
-        /** Simple (basic) ray tracer */
-        SIMPLE,
-        /** Ray tracer using regular grid */
-        GRID
-    }
-
-
     /**
      * The scene to be rendered
      */

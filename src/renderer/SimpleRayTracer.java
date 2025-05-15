@@ -42,9 +42,6 @@ public class SimpleRayTracer extends RayTracerBase{
             return scene.background;
         }
 
-        Point closestPoint = ray.findClosestPoint(intersections);
-        return calcColor(closestPoint);
+        return calcColor(ray.findClosestPoint(intersections));
     }
-
-
 }
