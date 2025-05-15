@@ -81,7 +81,8 @@ public class RenderTests {
          .writeToImage("color render test");
    }*/
 
-   /** Test for XML based scene - for bonus */
+
+   /** Test for XML based scene - for bonus
    @Test
    public void basicRenderXml() {
       Scene scene = new Scene("Using XML");
@@ -100,7 +101,7 @@ public class RenderTests {
          .writeToImage("xml render test");
    }
 
-
+*/
 
    /** Test for JSON based scene - for bonus
    @Test

@@ -218,6 +218,13 @@ public class Camera implements Cloneable {
         }
 
 
+        /**
+         * Set the resolution of the image
+         *
+         * @param nX the number of pixels in the x direction
+         * @param nY the number of pixels in the y direction
+         * @return the camera builder
+         */
         public Builder setResolution(int nX, int nY) {
             camera.nX = nX;
             camera.nY = nY;
@@ -356,7 +363,9 @@ public class Camera implements Cloneable {
 
 
     /**
-     * Render the image
+     * Set the image writer
+     *
+     * return the camera
      */
     public Camera renderImage() {
         int nx = imageWriter.getNx();
@@ -392,6 +401,9 @@ public class Camera implements Cloneable {
 
     /**
      * Write the image to a file
+     *
+     * @param pictureFileName the name of the file
+     * @return the camera
      */
     public Camera writeToImage(String pictureFileName) {
         imageWriter.writeToImage(pictureFileName);
@@ -401,8 +413,7 @@ public class Camera implements Cloneable {
 
     /**
      * Cast a ray through a pixel
-     *
-
+     * @param x the x index of the pixel
      */
     private void castRay(int x, int y) {
         if(x < 0|| x >= nX || y < 0 || y >= nY)
