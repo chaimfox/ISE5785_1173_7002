@@ -75,7 +75,8 @@ public class Plane extends Geometry {
      * @param ray The ray to check for intersections.
      * @return A list of intersection points, or null if there are no intersections.
      */
-    public List<Point> findIntersections(Ray ray) {
+    @Override
+    protected List<Intersection> calculateIntersectionsHelper(Ray ray) {
         if (ray.getHead().equals(pointOnPlane)) {
             return null; // The ray's head is on the plane
         }
@@ -93,7 +94,6 @@ public class Plane extends Geometry {
         }
 
         // Calculate the intersection point
-        Point intersectionPoint = ray.getPoint(t);
-        return List.of(intersectionPoint); // Return the intersection point as a list
+        return List.of(new Intersection(this, ray.getPoint(t))); // Return the intersection point as a list
     }
 }

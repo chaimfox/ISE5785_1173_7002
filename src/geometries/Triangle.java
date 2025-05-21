@@ -31,7 +31,8 @@ public class Triangle extends Polygon {
      * @param ray The ray to check for intersections.
      * @return A list of intersection points, or null if there are no intersections.
      */
-    public List<Point> findIntersections(Ray ray) {
+    @Override
+    protected List<Intersection> calculateIntersectionsHelper(Ray ray) {
         var intersections = plane.findIntersections(ray);
         // Check if the ray intersects the plane of the triangle
         if (intersections == null)
@@ -73,7 +74,7 @@ public class Triangle extends Polygon {
         if (d1 * d3 <= 0)
             return null;
 
-        return intersections;
+        return List.of(new Intersection(this, intersections.getFirst()));
     }
 
 }

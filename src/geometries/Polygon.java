@@ -91,7 +91,7 @@ public class Polygon extends Geometry {
     * @return a list of intersection points, or null if there are no intersections
     */
    @Override
-   public List<Point> findIntersections(Ray ray) {
+   protected List<Intersection> calculateIntersectionsHelper(Ray ray) {
 
       // Check if the ray intersects the plane of the polygon
       List<Point> planeIntersections = plane.findIntersections(ray);
@@ -125,9 +125,9 @@ public class Polygon extends Geometry {
          if (positive == null) {
             positive = dotProduct > 0;
          } else if (positive != dotProduct > 0)
-            return null; // the sing are not the sane for all vertices
+            return null; // the sing is not the sane for all vertices
       }
       // Return the intersection point with the plane of the polygon
-      return planeIntersections;
+      return List.of(new Intersection(this, planeIntersections.getFirst()));
    }
 }

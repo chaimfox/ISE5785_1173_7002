@@ -11,14 +11,73 @@ import java.util.List;
  */
 
 
-public interface Intersectable {
+public abstract class Intersectable {
 
 
     /**
-     * Finds the intersection points between a ray and the object implementing this interface.
-     *
-     * @param ray The ray to check for intersections with.
-     * @return A list of intersection points. If there are no intersections, an empty list is returned.
+     * Find intersections of a ray with the geometry
+     * @param ray the ray to find intersections with
+     * @return a list of intersection points
      */
-    public List<Point> findIntersections(Ray ray);
+    protected abstract List<Intersection> calculateIntersectionsHelper(Ray ray);
+
+    /**
+     * Find intersections of a ray with the geometry
+     * @param ray the ray to find intersections with
+     * @return a list of intersection points
+     */
+    public final List<Intersection> calculateIntersections(Ray ray){
+        return calculateIntersectionsHelper(ray);
+    }
+
+    /**
+     * Find intersections of a ray with the geometry
+     * @param ray the ray to find intersections with
+     * @return a list of intersection points
+     */
+    public final List<Point> findIntersections(Ray ray) {
+        var list = calculateIntersections(ray);
+        return list == null ? null : list.stream().map(intersection -> intersection.point).toList();
+    }
+
+
+
+    /**
+     * The Intersection class represents an intersection point between a ray and a geometry.
+     * It contains the geometry and the intersection point.
+     */
+    public static class Intersection {
+        public final Geometry geometry;
+        public final Point point;
+
+        /**
+         * Constructor for Intersection
+         * @param geometry the geometry
+         * @param point the point
+         */
+        public Intersection(Geometry geometry, Point point) {
+            this.geometry = geometry;
+            this.point = point;
+        }
+
+        /**
+         * Returns the geometry of the intersection.
+         * @return the geometry
+         */
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) return true;
+            return obj instanceof Intersection other &&
+                    geometry == other.geometry && point.equals(other.point);
+        }
+
+        /**
+         * Returns a string representation of the intersection.
+         * @return a string representation
+         */
+        @Override
+        public String toString() {
+            return "Intersection{" + "geometry=" + geometry + ", point=" + point + '}';
+        }
+    }
 }
