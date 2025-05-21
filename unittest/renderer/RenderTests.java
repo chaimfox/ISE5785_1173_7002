@@ -20,7 +20,7 @@ class RenderTests {
 
    /** Camera builder of the tests */
    private final Camera.Builder camera = Camera.getBuilder() //
-      .setLocation(Point.ZERO).setDirection(new Point(0, 0, -1), Vector.AXIS_Y) //
+      .setLocation(Point.ZERO).setDirection(new Point(0, 0, -1), new Vector(0,1,0)) //
       .setVpDistance(100) //
       .setVpSize(500, 500);
 
