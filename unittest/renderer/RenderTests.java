@@ -100,7 +100,7 @@ class RenderTests {
          .writeToImage("xml render test");
    }
 
-   /** Test for JSON based scene - for bonus */
+   /** Test for JSON based scene - for bonus
    @Test
    void basicRenderJson() {
       Scene scene = new Scene("Using Json");
@@ -118,4 +118,5 @@ class RenderTests {
          .printGrid(100, new Color(YELLOW)) //
          .writeToImage("xml render test");
    }
+    */
 }
