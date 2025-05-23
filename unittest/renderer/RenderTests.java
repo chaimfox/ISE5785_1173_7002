@@ -81,7 +81,38 @@ class RenderTests {
          .writeToImage("color render test");
    }
 
-   /** Test for XML based scene - for bonus */
+   @Test
+   void multiColorTwoTest() {
+      Scene scene = new Scene("Multi color").setAmbientLight(new AmbientLight(new Color(WHITE)));
+      Triangle a = new Triangle(new Point(-100, 0, -100), new Point(0, 100, -100), new Point(-100, 100, -100));
+      a.getMaterial().setkA(new Double3(0,0.8,0));
+      Triangle b = new Triangle(new Point(-100, 0, -100), new Point(0, -100, -100), new Point(-100, -100, -100));
+      b.getMaterial().setkA(new Double3(0.8,0,0));
+      Triangle c = new Triangle(new Point(100, 0, -100), new Point(0, -100, -100), new Point(100, -100, -100));
+      c.getMaterial().setkA(new Double3(0,0,0.8));
+      Sphere d = new Sphere(new Point(0, 0, -100), 50);
+      d.getMaterial().setkA(new Double3(0.4));
+
+      scene.geometries.add(a,b,c,d);
+        camera //
+             .setRayTracer(scene, RayTracerType.SIMPLE) //
+             .setResolution(1000, 1000) //
+             .build() //
+             .renderImage() //
+             .printGrid(100, new Color(WHITE)) //
+             .writeToImage("Multi color render test");
+   }
+
+
+
+
+
+
+
+
+
+
+   /** Test for XML based scene - for bonus
    @Test
    void basicRenderXml() {
       Scene scene = new Scene("Using XML");
@@ -99,6 +130,8 @@ class RenderTests {
          .printGrid(100, new Color(YELLOW)) //
          .writeToImage("xml render test");
    }
+    */
+
 
    /** Test for JSON based scene - for bonus
    @Test

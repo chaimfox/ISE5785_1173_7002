@@ -4,10 +4,11 @@ package primitives;
  * Material class represents the material of a geometry
  */
 public class Material {
+
     /**
-     * kD is the diffuse factor
+     * kA is the diffuse factor
      */
-    public Double3 kD = Double3.ZERO;
+    public Double3 kA = Double3.ONE;
     /**
      * kS is the specular factor
      */
@@ -19,21 +20,21 @@ public class Material {
 
     /**
      * Constructor for Material
-     * @param kD the diffuse factor
+     * @param kA the diffuse factor
      * @return the material
      */
-    public Material setKd(Double3 kD) {
-        this.kD = kD;
+    public Material setkA(Double3 kA) {
+        this.kA = kA;
         return this;
     }
 
     /**
      * Material setter
-     * @param kD the diffuse factor
+     * @param kA the diffuse factor
      * @return the material
      */
-    public Material setKd(double kD) {
-        this.kD = new Double3(kD);
+    public Material setkA(double kA) {
+        this.kA = new Double3(kA);
         return this;
     }
 
