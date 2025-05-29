@@ -5,7 +5,7 @@ import primitives.Color;
 /**
  * Abstract class Light is the basic class representing a light source in the 3D space.
  */
-abstract class Light {
+public abstract class Light {
     /**
      * the intensity of the light
      */

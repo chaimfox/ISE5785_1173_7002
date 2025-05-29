@@ -74,7 +74,7 @@ public class Triangle extends Polygon {
         if (d1 * d3 <= 0)
             return null;
 
-        return List.of(new Intersection(this, intersections.getFirst()));
+        return List.of(new Intersection(this, intersections.getFirst(), this.getMaterial()));
     }
 
 }

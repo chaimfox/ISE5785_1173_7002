@@ -173,6 +173,41 @@ class LightsTests {
          .writeToImage("lightTrianglesSpot");
    }
 
+   /** Produce a picture of a sphere lighted by 3 different light sources together */
+   @Test
+   void lightCombined1() {
+      scene1.geometries.add(sphere);
+      scene1.lights.add(new DirectionalLight(new Color(300, 150, 150), new Vector(1, 1, -1)));
+      scene1.lights.add(new PointLight(new Color(200, 300, 200), new Point(50, 50, 25)) //
+              .setKl(0.001).setKq(0.0002));
+      scene1.lights.add(new SpotLight(new Color(250, 250, 400), new Point(-60, -60, 40), new Vector(1, 1, -1)) //
+              .setKl(0.001).setKq(0.0001));
+
+      camera1 //
+              .setResolution(500, 500) //
+              .build() //
+              .renderImage() //
+              .writeToImage("lightCombined1");
+   }
+
+   /** Produce a picture of two triangles lighted by 3 different light sources together */
+   @Test
+   void lightCombined2() {
+      scene2.geometries.add(triangle1, triangle2);
+      scene2.lights.add(new DirectionalLight(new Color(400, 300, 100), new Vector(-1, -1, -1)));
+      scene2.lights.add(new PointLight(new Color(300, 200, 300), new Point(-30, 60, -80)) //
+              .setKl(0.0015).setKq(0.0003));
+      scene2.lights.add(new SpotLight(new Color(500, 300, 200), new Point(50, -40, 30), new Vector(-2, 2, -1)) //
+              .setKl(0.001).setKq(0.0001));
+
+      camera2 //
+              .setResolution(500, 500) //
+              .build() //
+              .renderImage() //
+              .writeToImage("lightCombined2");
+   }
+
+
 
    /** Produce a picture of a sphere lighted by a narrow spotlight */
    /**

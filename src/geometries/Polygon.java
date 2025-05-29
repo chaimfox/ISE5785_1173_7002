@@ -128,6 +128,6 @@ public class Polygon extends Geometry {
             return null; // the sing is not the sane for all vertices
       }
       // Return the intersection point with the plane of the polygon
-      return List.of(new Intersection(this, planeIntersections.getFirst()));
+      return List.of(new Intersection(this, planeIntersections.getFirst() , this.getMaterial()));
    }
 }

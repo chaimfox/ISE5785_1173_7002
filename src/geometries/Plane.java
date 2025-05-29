@@ -94,6 +94,6 @@ public class Plane extends Geometry {
         }
 
         // Calculate the intersection point
-        return List.of(new Intersection(this, ray.getPoint(t))); // Return the intersection point as a list
+        return List.of(new Intersection(this, ray.getPoint(t), this.getMaterial())); // Return the intersection point as a list
     }
 }

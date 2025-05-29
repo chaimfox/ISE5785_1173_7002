@@ -115,6 +115,6 @@ public class Ray {
         if (points == null || points.isEmpty()) {
             return null;
         }
-        return findClosestIntersection(points.stream().map(p -> new Intersection(null, p)).toList()).point;
+        return findClosestIntersection(points.stream().map(p -> new Intersection(null, p,null)).toList()).point;
     }
 }
