@@ -58,6 +58,11 @@ public class PointLight extends Light implements LightSource{
         return this;
     }
 
+    /**
+     * get intensity of the light at a specific point
+     * @param p point to which the intensity is calculated
+     * @return the intensity
+     */
     @Override
     public Color getIntensity(Point p) {
         double d = position.distance(p);
@@ -68,6 +73,11 @@ public class PointLight extends Light implements LightSource{
         return intensity.scale(1d/factor);
     }
 
+    /**
+     * get direction of the light at a specific point
+     * @param p point to which the vector is calculated
+     * @return vector from the light source to the point
+     */
     @Override
     public Vector getL(Point p) {
         return p.subtract(position).normalize();

@@ -21,24 +21,44 @@ public class SpotLight extends PointLight{
         this.direction = direction.normalize();
     }
 
+    /**
+     * set attenuation factor
+     * @param kC attenuation factor
+     * @return
+     */
     @Override
     public SpotLight setKc(double kC) {
         super.setKc(kC);
         return this;
     }
 
+    /**
+     * set attenuation factor
+     * @param kL attenuation factor
+     * @return this SpotLight instance
+     */
     @Override
     public SpotLight setKl(double kL) {
         super.setKl(kL);
         return this;
     }
 
+    /**
+     * set attenuation factor
+     * @param kQ attenuation factor
+     * @return this SpotLight instance
+     */
     @Override
     public SpotLight setKq(double kQ) {
         super.setKq(kQ);
         return this;
     }
 
+    /**
+     * get direction of the light at a specific point
+     * @param p point to which the intensity is calculated
+     * @return direction of the light at a specific point
+     */
     @Override
     public Color getIntensity(Point p) {
         Color oldColor = super.getIntensity(p);

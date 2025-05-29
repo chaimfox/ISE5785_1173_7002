@@ -88,7 +88,7 @@ public class SimpleRayTracer extends RayTracerBase{
      * @param v the direction vector of the ray
      * @return true if the dot product is not zero, false otherwise
      */
-    public boolean preprocessIntersection(Intersection intersection, Vector v) {
+    private boolean preprocessIntersection(Intersection intersection, Vector v) {
         intersection.v = v.normalize();
         intersection.normal = intersection.geometry.getNormal(intersection.point);
         intersection.vNormal = alignZero(v.dotProduct(intersection.normal));
@@ -100,12 +100,12 @@ public class SimpleRayTracer extends RayTracerBase{
      * including the light vector, light source reference, and dot product.
      *
      * @param intersection the intersection data to be updated
-     * @param lightSource the light source affecting the point
+     * @param light the light source affecting the point
      * @return true if both dot products have the same sign, false otherwise
      */
-    public boolean setLightSource(Intersection intersection, LightSource lightSource) {
-        intersection.l = lightSource.getL(intersection.point).normalize();
-        intersection.light = lightSource;
+    private boolean setLightSource(Intersection intersection, LightSource light) {
+        intersection.light = light;
+        intersection.l = light.getL(intersection.point).normalize();
         intersection.lNormal = alignZero(intersection.l.dotProduct(intersection.normal));
         return intersection.lNormal * intersection.vNormal > 0;
     }
