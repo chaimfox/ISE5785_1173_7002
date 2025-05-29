@@ -8,7 +8,7 @@ import primitives.Vector;
  * class for directional light
  */
 public class DirectionalLight extends Light implements LightSource{
-    private Vector direction;
+    private final Vector direction;
 
     /**
      * get intensity of the light at a specific point
@@ -21,12 +21,12 @@ public class DirectionalLight extends Light implements LightSource{
     }
 
     @Override
-    public Vector getL(Point point) {
+    public Vector getL(Point p) {
         return direction;
     }
 
     @Override
-    public Color getIntensity(Point point) {
+    public Color getIntensity(Point p) {
         return intensity;
     }
 }

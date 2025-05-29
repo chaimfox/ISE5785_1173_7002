@@ -8,7 +8,18 @@ import primitives.Vector;
  */
 public class SpotLight extends PointLight{
     private final Vector direction;
-    private Double narrowBeam = 1d;
+
+
+    /**
+     * get intensity of the light at a specific point
+     * @param color color of the light
+     * @param direction direction of the light
+     * @param position position of the light source
+     */
+    public SpotLight(Color color, Point position, Vector direction) {
+        super(color, position);
+        this.direction = direction.normalize();
+    }
 
     @Override
     public SpotLight setKc(double kC) {
@@ -28,32 +39,9 @@ public class SpotLight extends PointLight{
         return this;
     }
 
-    /**
-     * set the narrow beam of the light
-     * @param narrowBeam the narrow beam of the light
-     * @return the light source
-     */
-    public SpotLight setNarrowBeam(double narrowBeam) {
-        this.narrowBeam = narrowBeam;
-        return this;
-    }
-
-    /**
-     * get intensity of the light at a specific point
-     * @param color color of the light
-     * @param direction direction of the light
-     * @param position position of the light source
-     */
-    public SpotLight(Color color, Vector direction, Point position) {
-        super(color, position);
-        this.direction = direction.normalize();
-    }
-
     @Override
-    public Color getIntensity(Point point) {
-        Color oldColor = super.getIntensity(point);
-        if(narrowBeam != 1d)
-            return oldColor.scale(Math.pow(Math.max(0d, direction.dotProduct(getL(point))),narrowBeam));
-        return oldColor.scale(Math.max(0d, direction.dotProduct(getL(point))));
+    public Color getIntensity(Point p) {
+        Color oldColor = super.getIntensity(p);
+        return oldColor.scale(Math.max(0d, direction.dotProduct(getL(p))));
     }
 }

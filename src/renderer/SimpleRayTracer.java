@@ -5,7 +5,7 @@ import primitives.Color;
 import primitives.Ray;
 import scene.Scene;
 
-import java.util.List;
+
 
 /**
  * SimpleRayTracer class is the basic class for ray tracing

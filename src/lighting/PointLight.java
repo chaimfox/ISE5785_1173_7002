@@ -12,10 +12,21 @@ public class PointLight extends Light implements LightSource{
     /**
      * position of the light source
      */
-    protected Point position;
+    protected final Point position;
     private double kC = 1d;
     private double kL = 0d;
     private double kQ = 0d;
+
+
+    /**
+     * get intensity of the light at a specific point
+     * @param color color of the light
+     * @param position position of the light source
+     */
+    public PointLight(Color color, Point position) {
+        super(color);
+        this.position = position;
+    }
 
     /**
      * get intensity of the light at a specific point
@@ -47,19 +58,9 @@ public class PointLight extends Light implements LightSource{
         return this;
     }
 
-    /**
-     * get intensity of the light at a specific point
-     * @param color color of the light
-     * @param position position of the light source
-     */
-    public PointLight(Color color, Point position) {
-        super(color);
-        this.position = position;
-    }
-
     @Override
-    public Color getIntensity(Point point) {
-        double d = position.distance(point);
+    public Color getIntensity(Point p) {
+        double d = position.distance(p);
         double factor = kC + kL * d + kQ * d * d;
         if(Util.isZero(factor))
             return intensity.scale(Double.POSITIVE_INFINITY);
@@ -68,7 +69,7 @@ public class PointLight extends Light implements LightSource{
     }
 
     @Override
-    public Vector getL(Point point) {
-        return point.subtract(position).normalize();
+    public Vector getL(Point p) {
+        return p.subtract(position).normalize();
     }
 }

@@ -9,6 +9,11 @@ public class Material {
      * kA is the diffuse factor
      */
     public Double3 kA = Double3.ONE;
+
+    /**
+     * kD is the diffuse factor
+     */
+    public Double3 kD = Double3.ZERO;
     /**
      * kS is the specular factor
      */
@@ -19,7 +24,7 @@ public class Material {
     public int nShininess = 0;
 
     /**
-     * Constructor for Material
+     * Material setter
      * @param kA the diffuse factor
      * @return the material
      */
@@ -40,10 +45,30 @@ public class Material {
 
     /**
      * Material setter
+     * @param kD the diffuse factor
+     * @return the material
+     */
+    public Material setKD(Double3 kD) {
+        this.kD = kD;
+        return this;
+    }
+
+    /**
+     * Material setter
+     * @param kD the diffuse factor
+     * @return the material
+     */
+    public Material setKD(double kD) {
+        this.kD = new Double3(kD);
+        return this;
+    }
+
+    /**
+     * Material setter
      * @param kS the specular factor
      * @return the material
      */
-    public Material setKs(Double3 kS) {
+    public Material setKS(Double3 kS) {
         this.kS = kS;
         return this;
     }
@@ -53,7 +78,7 @@ public class Material {
      * @param kS the specular factor
      * @return the material
      */
-    public Material setKs(double kS) {
+    public Material setKS(double kS) {
         this.kS = new Double3(kS);
         return this;
     }
