@@ -19,6 +19,9 @@ public class Ray {
      */
     private final Vector direction;
 
+    private static final double DELTA = 0.1;
+
+
     /**
      * Constructs a new ray with the specified starting point and direction.
      *
@@ -28,6 +31,20 @@ public class Ray {
     public Ray(Point head, Vector direction) {
         this.head = head;
         this.direction = direction.normalize();
+    }
+
+
+    /**
+     * Construct a ray with starting point, direction and normal.
+     * This constructor ensures that the reflected and refracted rays -
+     * won't intersect the geometry again (avoid self-intersections).
+     * @param p the starting point of the ray
+     * @param v the direction vector of the ray
+     * @param normal the surface normal at the point of origin
+     */
+    public Ray(Point p, Vector v, Vector normal) {
+        this.direction = v.normalize();
+        this.head = p.add(normal.scale(v.dotProduct(normal) > 0 ? DELTA : -DELTA));
     }
 
     /**
