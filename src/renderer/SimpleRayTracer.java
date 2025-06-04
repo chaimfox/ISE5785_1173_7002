@@ -73,37 +73,6 @@ public class SimpleRayTracer extends RayTracerBase {
 
 
     /**
-     Vector n = intersection.geometry.getNormal(intersection.point);
-     Vector direction = ray.getDirection();
-
-     Color color = intersection.geometry.getEmission();
-
-     Point point = intersection.point;
-
-     //store the values of the material
-     int nShininess = intersection.geometry.getMaterial().nShininess;
-     Double3 kD = intersection.geometry.getMaterial().kD;
-     Double3 kS = intersection.geometry.getMaterial().kS;
-
-     double nv = Util.alignZero(n.dotProduct(direction));
-     if (nv == 0d) return Color.BLACK;
-
-     // Calculate the color of the point by adding the diffusive and specular components
-     for (var lightSource : scene.lights) {
-     Vector l = lightSource.getL(point).normalize();
-     double nl = n.dotProduct(l);
-
-     if (nl * nv > 0d && unshaded(intersection, lightSource, l, n, nl)) {
-     Color lightIntensity = lightSource.getIntensity(intersection.point);
-     color = color.add(calcDiffusive(kD, nl, lightIntensity))
-     .add(calcSpecular(kS, l, n, nl, direction, nShininess, lightIntensity));
-     }
-     }
-     return color;
-     */
-
-
-    /**
      * Calculates the final color at the intersection point,
      * including ambient light and local lighting effects.
      *
@@ -115,9 +84,6 @@ public class SimpleRayTracer extends RayTracerBase {
         if (!preprocessIntersection(intersection, ray.getDirection())) {
             return Color.BLACK;
         }
-
-        Color color = scene.ambientLight.getIntensity()
-                .scale(intersection.geometry.getMaterial().kA).add(calcColor(intersection, MAX_CALC_COLOR_LEVEL, INITIAL_K));
 
         return calcColor(intersection, MAX_CALC_COLOR_LEVEL, INITIAL_K);
     }
@@ -279,7 +245,6 @@ public class SimpleRayTracer extends RayTracerBase {
         Vector lightDirection = intersection.l.scale(-1.0); // from point to light source
         Vector delta = intersection.normal.scale(intersection.lNormal < 0 ? DELTA : -DELTA);
         Ray lightRay = new Ray(intersection.point.add(delta), lightDirection);
-        double lightDistance = intersection.light.getDistance(intersection.point);
         List<Intersection> intersections = scene.geometries.calculateIntersections(lightRay);
 
         if (intersections == null)
@@ -296,23 +261,5 @@ public class SimpleRayTracer extends RayTracerBase {
         Vector normal = intersection.normal;
         return intersection.l.add((normal.scale(intersection.l.dotProduct(normal)).scale(-2.0)));
     }
-
-
-
-//    private boolean unshaded(GeoPoint gp, LightSource lightSource, Vector l, Vector n, double nl) {
-//        Ray lightRay = new Ray(gp.point, l.scale(-1), n);
-//        List<GeoPoint> intersections = scene.geometries.findGeoIntersections(lightRay, lightSource.getDistance(gp.point));
-//
-//
-//        if (intersections == null)
-//            return true;
-//
-//        for(GeoPoint point : intersections){
-//            if (point.geometry.getMaterial().kT.equals(Double3.ZERO))
-//                return false;
-//        }
-//        return true;
-//
-//    }
 
 }
