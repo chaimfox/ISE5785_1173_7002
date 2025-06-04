@@ -17,6 +17,9 @@ import static primitives.Util.alignZero;
  * SimpleRayTracer class is the basic class for ray tracing
  */
 public class SimpleRayTracer extends RayTracerBase{
+
+    private static final double DELTA = 0.1;
+
     /**
      * Constructor to initialize the scene
      * @param scene the scene to be rendered
@@ -34,7 +37,7 @@ public class SimpleRayTracer extends RayTracerBase{
     private Color calcColorLocalEffects(Intersection intersection) {
         Color color = intersection.geometry.getEmission();
         for (LightSource lightSource : scene.lights) {
-            if(!setLightSource(intersection, lightSource)){
+            if(!setLightSource(intersection, lightSource) || !unshaded(intersection)){
                 continue;
             }
             color = color.add(
@@ -45,6 +48,41 @@ public class SimpleRayTracer extends RayTracerBase{
         }
         return color;
     }
+
+
+    /**
+     Vector n = intersection.geometry.getNormal(intersection.point);
+     Vector direction = ray.getDirection();
+
+     Color color = intersection.geometry.getEmission();
+
+     Point point = intersection.point;
+
+     //store the values of the material
+     int nShininess = intersection.geometry.getMaterial().nShininess;
+     Double3 kD = intersection.geometry.getMaterial().kD;
+     Double3 kS = intersection.geometry.getMaterial().kS;
+
+     double nv = Util.alignZero(n.dotProduct(direction));
+     if (nv == 0d) return Color.BLACK;
+
+     // Calculate the color of the point by adding the diffusive and specular components
+     for (var lightSource : scene.lights) {
+     Vector l = lightSource.getL(point).normalize();
+     double nl = n.dotProduct(l);
+
+     if (nl * nv > 0d && unshaded(intersection, lightSource, l, n, nl)) {
+     Color lightIntensity = lightSource.getIntensity(intersection.point);
+     color = color.add(calcDiffusive(kD, nl, lightIntensity))
+     .add(calcSpecular(kS, l, n, nl, direction, nShininess, lightIntensity));
+     }
+     }
+     return color;
+     */
+
+
+
+
 
     /**
      * Calculates the final color at the intersection point,
@@ -132,5 +170,38 @@ public class SimpleRayTracer extends RayTracerBase{
     private Double3 calcDiffusive(Intersection intersection) {
         return intersection.material.kD.scale(Math.abs(intersection.lNormal));
     }
+
+
+    private boolean unshaded(Intersection intersection) {
+        Vector lightDirection = intersection.l.scale(-1); // from point to light source
+        Vector delta = intersection.normal.scale(intersection.lNormal < 0 ? DELTA : -DELTA);
+        Ray lightRay = new Ray(intersection.point.add(delta), lightDirection);
+        List<Intersection> intersections = scene.geometries.calculateIntersections(lightRay);
+
+        if (intersections == null)
+            return true;
+
+        for (Intersection inter : intersections) {
+            if (inter.point.distance(intersection.point) < intersection.light.getDistance(intersection.point))
+                return false;
+        }
+        return true;
+    }
+
+//    private boolean unshaded(GeoPoint gp, LightSource lightSource, Vector l, Vector n, double nl) {
+//        Ray lightRay = new Ray(gp.point, l.scale(-1), n);
+//        List<GeoPoint> intersections = scene.geometries.findGeoIntersections(lightRay, lightSource.getDistance(gp.point));
+//
+//
+//        if (intersections == null)
+//            return true;
+//
+//        for(GeoPoint point : intersections){
+//            if (point.geometry.getMaterial().kT.equals(Double3.ZERO))
+//                return false;
+//        }
+//        return true;
+//
+//    }
 
 }

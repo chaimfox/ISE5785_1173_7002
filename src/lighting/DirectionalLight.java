@@ -39,4 +39,14 @@ public class DirectionalLight extends Light implements LightSource{
     public Color getIntensity(Point p) {
         return intensity;
     }
+
+    /**
+     * get distance from the light source to a point
+     * @param point the point to which the distance is calculated
+     * @return the distance from the light source to the point
+     */
+    @Override
+    public double getDistance(Point point) {
+        return Double.POSITIVE_INFINITY;
+    }
 }

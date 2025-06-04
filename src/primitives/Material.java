@@ -23,6 +23,32 @@ public class Material {
      */
     public int nShininess = 0;
 
+
+    /**
+     * kT is the transparency factor
+     */
+    public Double3 kT = Double3.ZERO;
+
+    /**
+     * setter for transparency factor
+     * @param kt the transparency factor
+     * @return the material
+     */
+    public  Material setKt(Double3 kt){
+        this.kT = kt;
+        return this;
+    }
+
+    /**
+     * setter for transparency factor
+     * @param kt the transparency factor
+     * @return the material
+     */
+    public Material setKt(double kt){
+        this.kT = new Double3(kt);
+        return this;
+    }
+
     /**
      * Material setter
      * @param kA the diffuse factor
