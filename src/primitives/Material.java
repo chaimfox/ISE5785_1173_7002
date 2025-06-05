@@ -6,14 +6,15 @@ package primitives;
 public class Material {
 
     /**
+     * kD is the diffuse factor
+     */
+    public Double3 kD = Double3.ZERO;
+
+    /**
      * kA is the diffuse factor
      */
     public Double3 kA = Double3.ONE;
 
-    /**
-     * kD is the diffuse factor
-     */
-    public Double3 kD = Double3.ZERO;
     /**
      * kS is the specular factor
      */
@@ -21,13 +22,13 @@ public class Material {
     /**
      * kT is the transparency factor
      */
+
     public int nShininess = 0;
 
     /**
      * kR is the reflection factor
      */
     public Double3 kR = Double3.ZERO;
-
 
     /**
      * kT is the transparency factor

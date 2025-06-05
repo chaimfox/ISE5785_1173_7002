@@ -107,4 +107,47 @@ class ReflectionRefractionTests {
          .renderImage() //
          .writeToImage("refractionShadow");
    }
+
+   @Test
+   void ourPicture() {
+      scene.geometries.add(
+              new Sphere(new Point(-30, -30, 30),20)
+                      .setEmission(new Color(GREEN))
+                      .setMaterial(new Material().setKD(0.4).setKS(0.3).setShininess(150).setKt(0.3)), //
+
+              new Triangle(new Point(-10, -20, -40), new Point(0, 20, -40), new Point(30, -10, -40)) //
+                      .setEmission(new Color(RED)) //
+                      .setMaterial(new Material().setKD(0.7).setKS(0.3).setShininess(40).setkA(0.15).setKt(0.7)), //
+              new Polygon(new Point(-100, -100, -120), new Point(100, -100, -120),
+                      new Point(100, 100, -120), new Point(-100, 100, -120))
+                      .setEmission(new Color(BLUE)) //
+                      .setMaterial(new Material().setKD(0.3).setKr(0.4).setkA(0.05)) //
+      );
+
+      scene.setAmbientLight(new AmbientLight(new Color(26, 26, 26)));
+      scene.lights.add( //
+              new SpotLight(new Color(1000, 600, 0), new Point(-100, -100, 500), new Vector(-1, -1, -2)) //
+                      .setKl(0.0004).setKq(0.0000006));
+
+
+      cameraBuilder
+              .setLocation(new Point(0, 0, 1000)) //
+              .setDirection(Point.ZERO, Vector.AXIS_Y) //
+              .setVpDistance(1000).setVpSize(150, 150) //
+              .setResolution(500, 500) //
+              .build() //
+              .renderImage() //
+              .writeToImage("our Picture");
+   }
+
+
+
+   /**
+    new Sphere( new Point(0, 0, -60),20)
+    .setEmission(new Color(255, 0, 0))
+    .setMaterial(new Material().setKD(0.5).setKS(0.5).setShininess(60))
+
+    */
+
+
 }
