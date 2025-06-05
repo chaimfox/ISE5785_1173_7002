@@ -141,13 +141,4 @@ class ReflectionRefractionTests {
    }
 
 
-
-   /**
-    new Sphere( new Point(0, 0, -60),20)
-    .setEmission(new Color(255, 0, 0))
-    .setMaterial(new Material().setKD(0.5).setKS(0.5).setShininess(60))
-
-    */
-
-
 }
