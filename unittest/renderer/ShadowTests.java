@@ -120,4 +120,39 @@ class ShadowTests {
          .writeToImage("shadowTrianglesSphere");
    }
 
+   @Test
+   void partialShadowDemo() {
+      Scene scene = new Scene("Partial Shadow Test")
+              .setAmbientLight(new AmbientLight(java.awt.Color.WHITE), new Double3(0.1)))
+              .setBackground(new Color(75, 75, 75));
+
+      Camera camera = new Camera(new Point(0, 0, 1000), new Vector(0, 0, -1), new Vector(0, 1, 0))
+              .setVPSize(150, 150).setVPDistance(1000)
+              .setImageWriter(new ImageWriter("partialShadowDemo", 500, 500))
+              .setRayTracer(new SimpleRayTracer(scene));
+
+      // גוף שקוף חלקית
+      scene.geometries.add(
+              new Sphere(40, new Point(0, 0, 0))
+                      .setEmission(new Color(0, 0, 255))
+                      .setMaterial(new Material().setKt(0.6))
+      );
+
+      // גוף אדום מאחור
+      scene.geometries.add(
+              new Sphere(20, new Point(0, 0, -60))
+                      .setEmission(new Color(255, 0, 0))
+                      .setMaterial(new Material().setKD(0.5).setKS(0.5).setShininess(60))
+      );
+
+      // מקור אור
+      scene.lights.add(
+              new PointLight (new Color((java.awt.Color.WHITE)), new Point(50, 50, 50))
+                      .setKl(0.001).setKq(0.0002)
+      );
+
+      camera.renderImage();
+      camera.writeToImage();
+   }
+
 }

@@ -1,5 +1,6 @@
 package renderer;
 
+
 import geometries.Intersectable.Intersection;
 import lighting.LightSource;
 import primitives.*;
@@ -50,26 +51,40 @@ public class SimpleRayTracer extends RayTracerBase {
     }
 
 
-    /**
-     * Calculates the local lighting effects (diffuse and specular) at the intersection point.
+
+     /**
+     * Calculates the local lighting effects (diffuse and specular) at the intersection point,
+     * with partial shadow support using transparency factor (ktr), according to stage 7 - part G.
      *
      * @param intersection the intersection data
-     * @return the color at the point with local lighting applied
+     * @return the color at the point with local lighting effects and transparency-aware shadows
      */
     private Color calcColorLocalEffects(Intersection intersection) {
-        Color color = intersection.geometry.getEmission();
+        Color color = intersection.geometry.getEmission(); // Start with emission color
+
         for (LightSource lightSource : scene.lights) {
-            if (!setLightSource(intersection, lightSource) || !unshaded(intersection)) {
+            if (!setLightSource(intersection, lightSource)) {
                 continue;
             }
-            color = color.add(
-                    lightSource.getIntensity(intersection.point).scale(
-                            calcDiffusive(intersection).add(calcSpecular(intersection))
-                    )
-            );
+
+            // Compute transparency factor (ktr) based on occlusion by transparent geometries
+            Double3 ktr = transparency(intersection);
+            if (ktr.equals(Double3.ZERO)) {
+                continue;
+            }
+
+            // Scale light intensity by ktr (partial shadow) before applying lighting model
+            Color lightIntensity = lightSource.getIntensity(intersection.point).scale(ktr);
+
+            // Add diffuse and specular contributions
+            Double3 diffuse = calcDiffusive(intersection);
+            Double3 specular = calcSpecular(intersection);
+            color = color.add(lightIntensity.scale(diffuse.add(specular)));
         }
+
         return color;
     }
+
 
 
     /**
@@ -256,6 +271,39 @@ public class SimpleRayTracer extends RayTracerBase {
         }
         return true;
     }
+
+    /**
+     * Computes the accumulated transparency factor (ktr) between a point and its light source.
+     * This is used for partial shadow calculation: if an object between the point and light is semi-transparent,
+     * it contributes partially to the shadow.
+     *
+     * @param intersection the intersection point for which transparency is evaluated
+     * @return a Double3 representing how much light passes through (1 = full light, 0 = full shadow)
+     */
+    private Double3 transparency(Intersection intersection) {
+        Vector lightDir = intersection.l.scale(-1.0); // from point toward the light
+        Vector offset = intersection.normal.scale(intersection.vNormal < 0 ? DELTA : -DELTA);
+        Point shadowOrigin = intersection.point.add(offset);
+        Ray shadowRay = new Ray(shadowOrigin, lightDir);
+
+        double lightDistance = intersection.light.getDistance(intersection.point);
+        List<Intersection> shadowIntersections = scene.geometries.calculateIntersections(shadowRay);
+
+        Double3 ktr = Double3.ONE;
+        if (shadowIntersections == null) return ktr;
+
+        for (Intersection s : shadowIntersections) {
+            if (s.point.distance(intersection.point) < lightDistance) {
+                ktr = ktr.product(s.material.kT);
+                if (ktr.lowerThan(MIN_CALC_COLOR_K)) {
+                    return Double3.ZERO;
+                }
+            }
+        }
+
+        return ktr;
+    }
+
 
     private Vector calcReflection(Intersection intersection) {
         Vector normal = intersection.normal;
