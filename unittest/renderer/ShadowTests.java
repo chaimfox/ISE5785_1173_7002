@@ -48,7 +48,7 @@ class ShadowTests {
       camera
          .setResolution(400, 400) //
          .build() //
-         .renderImage() //
+         .renderImageNoThreads() //
          .writeToImage(pictName);
    }
 
@@ -116,7 +116,7 @@ class ShadowTests {
       camera//
          .setResolution(600, 600) //
          .build() //
-         .renderImage() //
+         .renderImageNoThreads() //
          .writeToImage("shadowTrianglesSphere");
    }
 

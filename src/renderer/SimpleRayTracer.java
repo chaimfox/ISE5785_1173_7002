@@ -17,6 +17,8 @@ import static primitives.Util.isZero;
 public class SimpleRayTracer extends RayTracerBase {
 
     private static final double DELTA = 0.1;
+    /** Shadow‐ray bias to prevent acne. */
+    private static final double EPS       = 0.1;
     private static final int MAX_CALC_COLOR_LEVEL = 10;
     private static final double MIN_CALC_COLOR_K = 0.001;
     private static final Double3 INITIAL_K = Double3.ONE;
@@ -92,6 +94,7 @@ public class SimpleRayTracer extends RayTracerBase {
         }
         return calcColor(intersection, MAX_CALC_COLOR_LEVEL, INITIAL_K);
     }
+
 
 
     private Color calcColor(Intersection intersection, int level, Double3 k) {
@@ -247,10 +250,9 @@ public class SimpleRayTracer extends RayTracerBase {
      * @return a Double3 representing how much light passes through (1 = full light, 0 = full shadow)
      */
     private Double3 transparency(Intersection intersection) {
-        Vector lightDir = intersection.l.scale(-1.0);
         Vector offset = intersection.normal.scale(intersection.vNormal < 0 ? DELTA : -DELTA);
         Point shadowOrigin = intersection.point.add(offset);
-        Ray shadowRay = new Ray(shadowOrigin, lightDir);
+        Ray shadowRay = new Ray(shadowOrigin, intersection.l.scale(-1.0));
 
         double lightDistance = intersection.light.getDistance(intersection.point);
         List<Intersection> shadowIntersections = scene.geometries.calculateIntersections(shadowRay);

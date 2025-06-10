@@ -3,6 +3,14 @@ package renderer;
 import primitives.*;
 import scene.Scene;
 import java.util.MissingResourceException;
+import lighting.*;
+import geometries.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.IntStream;
+
+import static java.lang.Math.abs;
+import static primitives.Util.isZero;
 
 /**
  * Camera class represents a camera in the 3D space
@@ -22,6 +30,16 @@ public class Camera implements Cloneable {
 
     private int nX = 1;
     private int nY = 1;
+
+    // === multithreading & progress tracking fields ===
+    private int threadsCount       = 0;
+    private static final int SPARE_THREADS = 2;
+    private double printInterval   = 0;
+    private PixelManager pixelManager = new PixelManager(0,0,0);
+
+
+
+
 
     /**
      * Camera constructor
@@ -140,7 +158,8 @@ public class Camera implements Cloneable {
      *
      * @return the camera
      */
-    public Camera renderImage() {
+    /** Single‐threaded rendering. */
+    public Camera renderImageNoThreads() {
         int nx = imageWriter.getNx();
         int ny = imageWriter.getNy();
         for (int i = 0; i < ny; i++) {
@@ -151,6 +170,52 @@ public class Camera implements Cloneable {
         return this;
     }
 
+    /** Parallel streams rendering. */
+    private Camera renderImageStream() {
+        int nx = imageWriter.getNx();
+        int ny = imageWriter.getNy();
+        IntStream.range(0, ny).parallel()
+                .forEach(i -> IntStream.range(0, nx).parallel()
+                        .forEach(j -> castRay(j, i)));
+        return this;
+    }
+
+
+    /** Raw‐threads rendering via PixelManager. */
+    private Camera renderImageRawThreads() {
+        int nx = imageWriter.getNx(), ny = imageWriter.getNy();
+        List<Thread> threads = new LinkedList<>();
+        for (int t = 0; t < threadsCount; t++) {
+            threads.add(new Thread(() -> {
+                PixelManager.Pixel p;
+                while ((p = pixelManager.nextPixel()) != null) {
+                    castRay(p.col(), p.row());
+                }
+            }));
+        }
+        threads.forEach(Thread::start);
+        for (Thread t : threads) {
+        try { t.join(); } catch (InterruptedException ignored) {}
+    }
+        return this;
+}
+
+/**
+ * Render the image using the chosen strategy:
+ *   threadsCount = 0  → no threads
+ *                 -1 → parallel streams
+ *                 >0 → raw threads
+ */
+
+public Camera renderImage() {
+    pixelManager = new PixelManager(nY, nX, printInterval);
+
+    return switch (threadsCount) {
+        case  0  -> renderImageNoThreads();
+        case -1  -> renderImageStream();
+        default  -> renderImageRawThreads();
+    };
+}
 
     /**
      * Print a grid on the image
@@ -171,6 +236,8 @@ public class Camera implements Cloneable {
     }
 
 
+
+
     /**
      * Write the image to a file
      *
@@ -182,7 +249,6 @@ public class Camera implements Cloneable {
         return this;
     }
 
-
     /**
      * Cast a ray through a pixel
      * @param x the x index of the pixel
@@ -193,7 +259,9 @@ public class Camera implements Cloneable {
             throw new IllegalArgumentException("x and y must be inside the image bounds");
 
         imageWriter.writePixel(x,y,rayTracer.traceRay(constructRay(nX, nY, x, y)));
+        pixelManager.pixelDone();
     }
+
 
 
     /**
@@ -345,6 +413,35 @@ public class Camera implements Cloneable {
         }
 
         /**
+         * Configure multithreading:Add commentMore actions
+         *   -2 → auto (cores – SPARE_THREADS)
+         *   -1 → parallel streams
+         *    0 → off
+         *   >0 → exact thread count
+         */
+        public Builder setMultithreading(int threads) {
+            if (threads < -2)
+                throw new IllegalArgumentException("Multithreading parameter must be ≥ -2");
+            if (threads == -2) {
+                int cores = Runtime.getRuntime().availableProcessors() - SPARE_THREADS;
+                camera.threadsCount = Math.max(1, cores);
+            } else {
+                camera.threadsCount = threads;
+            }
+            return this;
+        }
+
+        /**
+        * Enable progress printing every `interval` percent (0 = off).Add commentMore actions
+        */
+        public Builder setDebugPrint(double interval) {
+            if (interval < 0)
+            throw new IllegalArgumentException("Print interval must be non‐negative");
+            camera.printInterval = interval;
+            return this;
+        }
+
+        /**
          * Build the camera
          *
          * @return the camera
@@ -376,8 +473,11 @@ public class Camera implements Cloneable {
                     !Util.isZero(camera.vRight.dotProduct(camera.vUp)))
                 throw new IllegalArgumentException("vTo, vUp and vRight must be orthogonal");
 
-            if (camera.vTo.length() != 1 || camera.vUp.length() != 1 || camera.vRight.length() != 1)
+
+// Maybe revert to the old != 1 test
+            if (!isZero(camera.vTo.length() - 1) || !isZero(camera.vUp.length() - 1) || !isZero(camera.vRight.length() - 1)) {
                 throw new IllegalArgumentException("vTo, vUp and vRight must be normalized");
+            }
 
             if (camera.width <= 0 || camera.height <= 0)
                 throw new IllegalArgumentException("width and height must be positive");

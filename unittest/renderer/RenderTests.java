@@ -46,7 +46,7 @@ class RenderTests {
          .setRayTracer(scene, RayTracerType.SIMPLE) //
          .setResolution(1000, 1000) //
          .build() //
-         .renderImage() //
+         .renderImageNoThreads() //
          .printGrid(100, new Color(YELLOW)) //
          .writeToImage("Two color render test");
    }
@@ -76,7 +76,7 @@ class RenderTests {
          .setRayTracer(scene, RayTracerType.SIMPLE) //
          .setResolution(1000, 1000) //
          .build() //
-         .renderImage() //
+         .renderImageNoThreads() //
          .printGrid(100, new Color(WHITE)) //
          .writeToImage("color render test");
    }
@@ -98,7 +98,7 @@ class RenderTests {
              .setRayTracer(scene, RayTracerType.SIMPLE) //
              .setResolution(1000, 1000) //
              .build() //
-             .renderImage() //
+             .renderImageNoThreads() //
              .printGrid(100, new Color(WHITE)) //
              .writeToImage("Multi color render test");
    }

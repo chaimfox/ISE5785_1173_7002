@@ -4,6 +4,7 @@ import primitives.Color;
 import primitives.Point;
 import primitives.Util;
 import primitives.Vector;
+import java.util.Random;
 
 /**
  * PointLight class represents a light source with a specific position in the scene
@@ -17,6 +18,13 @@ public class PointLight extends Light implements LightSource{
     private double kL = 0d;
     private double kQ = 0d;
 
+    // Soft shadow sampling parameters
+    /** Radius of the circular area light (for area soft shadows). */
+    private double radius = 0.0;
+    /** Number of shadow-ray samples per shading point. */
+    private int numSamples = 1;
+    /** Random generator for jittering sample points on the disk. */
+    private final Random random = new Random();
 
     /**
      * get intensity of the light at a specific point
@@ -59,6 +67,45 @@ public class PointLight extends Light implements LightSource{
     }
 
     /**
+     * Sets the circular area radius for soft shadows.
+     * Radius must be non-negative. A radius of zero yields a point-light.
+     *
+     * @param radius radius of the light disk
+     * @return this PointLight for chaining
+     */
+    public PointLight setRadius(double radius) {
+        this.radius = Math.max(0, radius);
+        return this;
+    }
+
+    /**
+     * Sets the number of samples for area soft shadows (>= 1).
+     * More samples yield smoother shadows at higher cost.
+     *
+     * @param numSamples number of jittered shadow rays
+     * @return this PointLight for chaining
+     */
+    public PointLight setNumSamples(int numSamples) {
+        this.numSamples = Math.max(1, numSamples);
+        return this;
+    }
+
+    /**
+     * Returns the current area light radius.
+     *
+     * @return the radius of the light disk (0 for a point light)
+     */
+    public double getRadius() { return radius; }
+
+
+    /**
+     * Returns the number of samples for soft shadows.
+     *
+     * @return number of shadow-ray samples per shading point
+     */
+    public int getNumSamples() { return numSamples; }
+
+    /**
      * get intensity of the light at a specific point
      * @param p point to which the intensity is calculated
      * @return the intensity
@@ -92,4 +139,36 @@ public class PointLight extends Light implements LightSource{
     public double getDistance(Point point) {
         return position.distance(point);
     }
+
+
+    /**
+     * Samples a random point on the circular disk around this light for soft shadows.
+     * The disk lies in a plane orthogonal to vector (p - position).
+     *
+     * @param p shading point to cast shadows from
+     * @return a jittered sample point on the area light disk
+     */
+    public Point getSamplePoint(Point p) {
+        // Direction from light center to shading point
+        Vector toP = p.subtract(position).normalize();
+        // Choose arbitrary up vector not parallel to toP
+        Vector up = Math.abs(toP.getX()) < 1e-6 && Math.abs(toP.getZ()) < 1e-6
+                ? new Vector(1, 0, 0) : new Vector(0, 1, 0);
+        // Build orthonormal basis (u, v) on plane of the disk
+        Vector u = toP.crossProduct(up).normalize();
+        Vector v = toP.crossProduct(u).normalize();
+
+        // Generate random point in unit circle (uniform distribution)
+        double r = Math.sqrt(random.nextDouble()) * radius;
+        double theta = 2 * Math.PI * random.nextDouble();
+        double xOff = r * Math.cos(theta);
+        double yOff = r * Math.sin(theta);
+
+        // Map to disk around position
+        return position.add(u.scale(xOff)).add(v.scale(yOff));
+    }
+
+
+
+
 }

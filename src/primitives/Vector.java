@@ -35,6 +35,8 @@ public class Vector extends Point {
         }
     }
 
+
+
     /**
      * Checks if this vector is equal to another object.
      *

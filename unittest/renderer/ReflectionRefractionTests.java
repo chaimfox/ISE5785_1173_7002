@@ -43,7 +43,7 @@ class ReflectionRefractionTests {
          .setVpDistance(1000).setVpSize(150, 150) //
          .setResolution(500, 500) //
          .build() //
-         .renderImage() //
+         .renderImageNoThreads() //
          .writeToImage("refractionTwoSpheres");
    }
 
@@ -74,7 +74,7 @@ class ReflectionRefractionTests {
          .setVpDistance(10000).setVpSize(2500, 2500) //
          .setResolution(500, 500) //
          .build() //
-         .renderImage() //
+         .renderImageNoThreads() //
          .writeToImage("reflectionTwoSpheresMirrored");
    }
 
@@ -104,7 +104,7 @@ class ReflectionRefractionTests {
          .setVpDistance(1000).setVpSize(200, 200) //
          .setResolution(600, 600) //
          .build() //
-         .renderImage() //
+         .renderImageNoThreads() //
          .writeToImage("refractionShadow");
    }
 
@@ -136,7 +136,7 @@ class ReflectionRefractionTests {
               .setVpDistance(1000).setVpSize(150, 150) //
               .setResolution(500, 500) //
               .build() //
-              .renderImage() //
+              .renderImageNoThreads() //
               .writeToImage("our Picture");
    }
 

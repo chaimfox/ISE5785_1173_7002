@@ -100,7 +100,13 @@ public class Ray {
         if (isZero(t)) {
             return head;
         }
-        return head.add(direction.scale(t));
+
+        try {
+            return head.add(direction.scale(t));
+        } catch (IllegalArgumentException e) {
+
+            return head;
+        }
     }
 
     /**

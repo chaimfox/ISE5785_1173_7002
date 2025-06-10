@@ -103,7 +103,7 @@ class LightsTests {
       camera1 //
          .setResolution(500, 500) //
          .build() //
-         .renderImage() //
+         .renderImageNoThreads() //
          .writeToImage("lightSphereDirectional");
    }
 
@@ -117,7 +117,7 @@ class LightsTests {
       camera1 //
          .setResolution(500, 500) //
          .build() //
-         .renderImage() //
+         .renderImageNoThreads() //
          .writeToImage("lightSpherePoint");
    }
 
@@ -131,7 +131,7 @@ class LightsTests {
       camera1 //
          .setResolution(500, 500) //
          .build() //
-         .renderImage() //
+         .renderImageNoThreads() //
          .writeToImage("lightSphereSpot");
    }
 
@@ -143,7 +143,7 @@ class LightsTests {
 
       camera2.setResolution(500, 500) //
          .build() //
-         .renderImage() //
+         .renderImageNoThreads() //
          .writeToImage("lightTrianglesDirectional");
    }
 
@@ -156,7 +156,7 @@ class LightsTests {
 
       camera2.setResolution(500, 500) //
          .build() //
-         .renderImage() //
+         .renderImageNoThreads() //
          .writeToImage("lightTrianglesPoint");
    }
 
@@ -169,7 +169,7 @@ class LightsTests {
 
       camera2.setResolution(500, 500) //
          .build() //
-         .renderImage() //
+         .renderImageNoThreads() //
          .writeToImage("lightTrianglesSpot");
    }
 
@@ -186,7 +186,7 @@ class LightsTests {
       camera1 //
               .setResolution(500, 500) //
               .build() //
-              .renderImage() //
+              .renderImageNoThreads() //
               .writeToImage("lightCombined1");
    }
 
@@ -203,7 +203,7 @@ class LightsTests {
       camera2 //
               .setResolution(500, 500) //
               .build() //
-              .renderImage() //
+              .renderImageNoThreads() //
               .writeToImage("lightCombined2");
    }
 
