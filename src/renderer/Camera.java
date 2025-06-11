@@ -1,7 +1,7 @@
 package renderer;
 
 import primitives.*;
-import scene.Scene;
+import scene.*;
 import java.util.MissingResourceException;
 import lighting.*;
 import geometries.*;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import static java.lang.Math.abs;
-import static primitives.Util.isZero;
+
 
 /**
  * Camera class represents a camera in the 3D space
@@ -38,13 +38,19 @@ public class Camera implements Cloneable {
     private PixelManager pixelManager = new PixelManager(0,0,0);
 
 
-
-
-
     /**
      * Camera constructor
      */
     private Camera() {
+    }
+
+    /**
+     * Builder getter
+     *
+     * @return the camera builder
+     */
+    public static Builder getBuilder() {
+        return new Builder();
     }
 
     /**
@@ -160,10 +166,8 @@ public class Camera implements Cloneable {
      */
     /** Single‐threaded rendering. */
     public Camera renderImageNoThreads() {
-        int nx = imageWriter.getNx();
-        int ny = imageWriter.getNy();
-        for (int i = 0; i < ny; i++) {
-            for (int j = 0; j < nx; j++) {
+        for (int i = 0; i < imageWriter.getNy(); i++) {
+            for (int j = 0; j < imageWriter.getNx(); j++) {
                 castRay(j, i);
             }
         }
@@ -262,13 +266,62 @@ public Camera renderImage() {
         pixelManager.pixelDone();
     }
 
+    /**
+     * Rotates the camera around a specified target point by a given angle.
+     * This method calculates the new position of the camera based on the rotation
+     * and updates its direction and other properties accordingly.
+     *
+     * @param camera       The Camera object to rotate.
+     * @param target       The target point around which the camera will rotate.
+     * @param angleDegrees The angle in degrees to rotate the camera.
+     * @param scene        The scene to be rendered after rotation.
+     * @return A Builder object for further configuration of the rotated camera.
+     */
+    public static Camera.Builder rotateCameraAroundTarget(Camera camera, Point target, double angleDegrees, Scene scene) {
+        Vector radiusVec = camera.getP0().subtract(target);
 
+        double x = radiusVec.dotProduct(Vector.AXIS_X);
+        double z = radiusVec.dotProduct(Vector.AXIS_Z);
+
+        double angleRad = Math.toRadians(angleDegrees);
+        double rotatedX = x * Math.cos(angleRad) + z * Math.sin(angleRad);
+        double rotatedZ = -x * Math.sin(angleRad) + z * Math.cos(angleRad);
+
+        Vector rotatedVec = new Vector(rotatedX, 0, rotatedZ);
+        Point newLocation = target.add(rotatedVec);
+
+        return Camera.getBuilder()
+                .setLocation(newLocation)
+                .setDirection(target)
+                .setVpDistance(camera.getDistance())
+                .setVpSize(camera.getWidth(), camera.getHeight())
+                .setResolution(camera.getNx(), camera.getNy())
+                .setRayTracer(scene, RayTracerType.SIMPLE);
+    }
+
+    /**
+     * Sets the ray tracer for the camera, which is responsible for tracing rays
+     * and determining the color of pixels based on the scene.
+     *
+     * @param tracer The SimpleRayTracer object to set for the camera.
+     * @return this Builder object for method chaining.
+     */
+    public Builder setRayTracer(SimpleRayTracer tracer) {
+        this.rayTracer = tracer;
+        return new Builder().setRayTracer(null, RayTracerType.SIMPLE);
+    }
 
     /**
      * Camera builder
      */
     public static class Builder {
         private final Camera camera = new Camera();
+
+        /**
+         * Represents the target point the camera is focused on.
+         * Used for calculating the camera's direction and orientation.
+         */
+        private Point target = null;
 
         /**
          * Set the location of the camera
@@ -441,6 +494,49 @@ public Camera renderImage() {
             return this;
         }
 
+
+        /**
+         * Translates the camera by a given vector, maintaining the same focus.
+         * @param shift the translation vector
+         * @return this builder
+         */
+        public Builder translate(Vector shift) {
+            if (camera.p0 == null) {
+                throw new IllegalArgumentException("Camera location must be set before translation.");
+            }
+            if (shift.lengthSquared() == 0) return this; // ← הוספה קריטית
+            camera.p0 = camera.p0.add(shift);
+            if (target != null) {
+                target = target.add(shift);
+            }
+            return this;
+        }
+
+        /**
+         * Rotates the camera around its own vTo axis (like tilting the head sideways).
+         * @param degrees angle to rotate clockwise (in degrees)
+         * @return this builder
+         */
+        public Builder rotateAroundVTo(double degrees) {
+            if (camera.vTo == null || camera.vUp == null) {
+                throw new IllegalArgumentException("vTo and vUp must be set before rotation.");
+            }
+
+            Vector vRight = camera.vTo.crossProduct(camera.vUp);
+            if (vRight.lengthSquared() == 0) {
+                vRight = Vector.AXIS_X; // ← ברירת מחדל בטוחה אם קרוס נותן אפס
+            } else {
+                vRight = vRight.normalize();
+            }
+
+            double angleRad = Math.toRadians(degrees);
+            Vector newVUp = camera.vUp.scale(Math.cos(angleRad))
+                    .add(vRight.scale(Math.sin(angleRad)));
+
+            camera.vUp = newVUp.normalize();
+            return this;
+        }
+
         /**
          * Build the camera
          *
@@ -475,7 +571,7 @@ public Camera renderImage() {
 
 
 // Maybe revert to the old != 1 test
-            if (!isZero(camera.vTo.length() - 1) || !isZero(camera.vUp.length() - 1) || !isZero(camera.vRight.length() - 1)) {
+            if (!Util.isZero(camera.vTo.length() - 1) || !Util.isZero(camera.vUp.length() - 1) || !Util.isZero(camera.vRight.length() - 1)) {
                 throw new IllegalArgumentException("vTo, vUp and vRight must be normalized");
             }
 
@@ -503,15 +599,6 @@ public Camera renderImage() {
                 throw new RuntimeException(e);
             }
         }
-    }
-
-    /**
-     * Builder getter
-     *
-     * @return the camera builder
-     */
-    public static Builder getBuilder() {
-        return new Builder();
     }
 
 }

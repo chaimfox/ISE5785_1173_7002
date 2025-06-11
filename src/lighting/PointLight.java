@@ -1,10 +1,9 @@
 package lighting;
 
-import primitives.Color;
-import primitives.Point;
-import primitives.Util;
-import primitives.Vector;
+import primitives.*;
+import java.util.List;
 import java.util.Random;
+import static renderer.Blackboard.generateCircleGrid;
 
 /**
  * PointLight class represents a light source with a specific position in the scene
@@ -20,7 +19,7 @@ public class PointLight extends Light implements LightSource{
 
     // Soft shadow sampling parameters
     /** Radius of the circular area light (for area soft shadows). */
-    private double radius = 0.0;
+    protected double radius = 4;
     /** Number of shadow-ray samples per shading point. */
     private int numSamples = 1;
     /** Random generator for jittering sample points on the disk. */
@@ -168,7 +167,23 @@ public class PointLight extends Light implements LightSource{
         return position.add(u.scale(xOff)).add(v.scale(yOff));
     }
 
-
+    /**
+     * Generates a grid of vectors from the light source.
+     *
+     * @param p             The point to generate the grid from.
+     * @param gridResolution The number of cells along each dimension of the grid.
+     * @return A list of vectors representing the grid.
+     */
+    public List<Vector> getLs(Point p, int gridResolution) {
+        return generateCircleGrid(
+                getL(p),
+                position,
+                radius,
+                gridResolution
+        ).stream()
+                .map(point -> p.subtract(point).normalize())
+                .toList();
+    }
 
 
 }

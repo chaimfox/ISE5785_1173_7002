@@ -5,7 +5,9 @@ package primitives;
  */
 public class Vector extends Point {
 
+    public static Vector AXIS_X = new Vector(1d, 0d, 0d);
     public static Vector AXIS_Y = new Vector(0d, 1d, 0d);
+    public static Vector AXIS_Z = new Vector(0d, 0d, 1d);
 
     /**
      * Constructs a new vector with the specified coordinates.
