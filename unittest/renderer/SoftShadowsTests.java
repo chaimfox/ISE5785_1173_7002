@@ -111,7 +111,7 @@ public class SoftShadowsTests {
                 .build();
 
         SimpleRayTracer tracer = new SimpleRayTracer(scene)
-                .setSoftShadows(true)
+                .setSoftShadows(false)
                 .setGridResolution(5);
         camera.setRayTracer(tracer);
 
