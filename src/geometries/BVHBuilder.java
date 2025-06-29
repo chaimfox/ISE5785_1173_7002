@@ -1,8 +1,6 @@
 package geometries;
 
-import primitives.AABB;
-import primitives.Point;
-import primitives.Vector;
+import primitives.*;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -37,7 +35,7 @@ public class BVHBuilder {
             return objects.get(0);
         }
 
-        // 🔥 Filter out objects without bounding boxes (like infinite planes)
+        // Filter out objects without bounding boxes (like infinite planes)
         List<Intersectable> finiteObjects = new ArrayList<>();
         List<Intersectable> infiniteObjects = new ArrayList<>();
 

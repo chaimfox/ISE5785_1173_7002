@@ -8,8 +8,6 @@ import java.util.ArrayList;
 /**
  * BVH Node for hierarchical spatial organization
  * Stage 2: Manual hierarchy building for improved ray tracing performance
- *
- * @author Yehuda Rabin and Arye Hacohen
  */
 public class BVHNode extends Intersectable {
     /* * Left and right children of the BVH node
@@ -63,12 +61,11 @@ public class BVHNode extends Intersectable {
     /**
      * Calculate intersections with a ray
      * @param ray the ray to test for intersections
-     * @param maxDistance maximum distance to check for intersections
      * @return list of intersections, or null if no intersections found
      */
     @Override
-    protected List<Intersection> calculateIntersectionsHelper(Ray ray, double maxDistance) {
-        // 🔥 CRITICAL: Add bounding box check FIRST!
+    protected List<Intersection> calculateIntersectionsHelper(Ray ray) {
+        // CRITICAL: Add bounding box check FIRST!
         if (!getBoundingBox().intersect(ray)) {
             return null;
         }
@@ -76,14 +73,14 @@ public class BVHNode extends Intersectable {
         List<Intersection> result = null;
 
         // Check left child
-        List<Intersection> leftIntersections = left.calculateIntersections(ray, maxDistance);
+        List<Intersection> leftIntersections = left.calculateIntersections(ray);
         if (leftIntersections != null) {
             result = new ArrayList<>(leftIntersections);
         }
 
         // Check right child only if not leaf
         if (!isLeaf && right != null) {
-            List<Intersection> rightIntersections = right.calculateIntersections(ray, maxDistance);
+            List<Intersection> rightIntersections = right.calculateIntersections(ray);
             if (rightIntersections != null) {
                 if (result == null) {
                     result = new ArrayList<>(rightIntersections);

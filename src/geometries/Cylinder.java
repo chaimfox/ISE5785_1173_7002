@@ -2,7 +2,6 @@ package geometries;
 
 import primitives.*;
 
-
 /**
  * Represents a cylinder in three-dimensional space.
  * A cylinder is defined by its height and a ray that defines its axis.
@@ -64,6 +63,16 @@ public class Cylinder extends Tube {
 
         // If the point is on the lateral surface, delegate to Tube's normal calculation
         return super.getNormal(pointOnSurface);
+    }
+
+    /**Add commentMore actions
+     * Returns the height of the cylinder.
+     *
+     * @return the height of the cylinder
+     */
+    @Override
+    protected AABB calculateBoundingBox() {
+        return null;
     }
 
 }

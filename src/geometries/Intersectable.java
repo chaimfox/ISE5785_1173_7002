@@ -13,6 +13,11 @@ import java.util.List;
 
 public abstract class Intersectable {
 
+    /**
+     * The bounding box of the geometry, used for optimization in intersection calculations.
+     * It is initialized to null and can be set by subclasses if needed.
+     */
+    protected AABB boundingBox = null;
 
     /**
      * Find intersections of a ray with the geometry
@@ -25,8 +30,16 @@ public abstract class Intersectable {
      * Find intersections of a ray with the geometry
      * @param ray the ray to find intersections with
      * @return a list of intersection points
+     * CBR optimization wrapper for calculateIntersections
+     * Stage 1: Uses Conservative Boundary Region optimization
      */
     public final List<Intersection> calculateIntersections(Ray ray){
+        // CBR optimization - check bounding box first
+        if (boundingBox != null && !boundingBox.intersect(ray)) {
+            return null; // No intersection with bounding box = no intersection at all
+        }
+
+        // If we reach here, either no bounding box or ray intersects bounding box
         return calculateIntersectionsHelper(ray);
     }
 
@@ -41,6 +54,30 @@ public abstract class Intersectable {
     }
 
 
+    /**
+     * Get or calculate the bounding box for this geometry
+     * Lazy initialization pattern
+     */
+    public final AABB getBoundingBox() {
+        if (boundingBox == null) {
+            boundingBox = calculateBoundingBox();
+        }
+        return boundingBox;
+    }
+
+
+    /**
+     * Calculate the bounding box for this specific geometry
+     * To be implemented by concrete geometries
+     */
+    protected abstract AABB calculateBoundingBox();
+
+    /**
+     * Force recalculation of bounding box (useful when geometry changes)
+     */
+    public final void invalidateBoundingBox() {
+        boundingBox = null;
+    }
 
     /**
      * The Intersection class represents an intersection point between a ray and a geometry.

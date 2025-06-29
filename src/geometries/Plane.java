@@ -1,11 +1,7 @@
 package geometries;
 
-import primitives.Point;
-import primitives.Ray;
-import primitives.Vector;
-
+import primitives.*;
 import java.util.List;
-
 import static primitives.Util.*;
 
 /**
@@ -95,5 +91,11 @@ public class Plane extends Geometry {
 
         // Calculate the intersection point
         return List.of(new Intersection(this, ray.getPoint(t), this.getMaterial())); // Return the intersection point as a list
+    }
+
+    @Override
+    protected AABB calculateBoundingBox() {
+        // A plane is infinite in size, so it does not have a bounding box
+        return null;
     }
 }

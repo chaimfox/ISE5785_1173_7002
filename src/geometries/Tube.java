@@ -1,9 +1,8 @@
 package geometries;
 
-import primitives.Point;
-import primitives.Ray;
+import primitives.*;
 import java.util.List;
-import primitives.Vector;
+
 
 /**
  * Represents a tube in three-dimensional space.
@@ -47,5 +46,10 @@ public class Tube extends RadialGeometry {
     @Override
     protected List<Intersection> calculateIntersectionsHelper(Ray ray) {
         return null; // only for the function to work now
+    }
+
+    @Override
+    protected AABB calculateBoundingBox() {
+        return null;
     }
 }

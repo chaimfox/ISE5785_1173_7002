@@ -101,6 +101,8 @@ public class SoftShadowsTests {
         scene.setAmbientLight(new AmbientLight(new Color(30, 30, 30).scale(0.03)));
 
         Camera camera = cameraBuilder
+                .setSoftShadows(true)
+                .setGridResolution(5)
                 .setImageWriter(new ImageWriter(500, 500))
                 .setLocation(new Point(70, 80, 320))
                 .setDirection(new Point(0, 0, 0), new Vector(0, 0, 1))
@@ -108,14 +110,9 @@ public class SoftShadowsTests {
                 .setMultithreading(-2)
                 .setVpSize(350, 350)
                 .setResolution(500, 500)
-                .build();
-
-        SimpleRayTracer tracer = new SimpleRayTracer(scene)
-                .setSoftShadows(false)
-                .setGridResolution(5);
-        camera.setRayTracer(tracer);
-
-        camera.renderImage().writeToImage("SoftShadowBoxSphereCylinder");
+                .build()
+                .renderImage()
+                .writeToImage("SoftShadowBoxSphereCylinder");
     }
 
 }

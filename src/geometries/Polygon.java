@@ -5,9 +5,8 @@ import static primitives.Util.isZero;
 
 import java.util.List;
 
-import primitives.Point;
-import primitives.Ray;
-import primitives.Vector;
+import primitives.*;
+
 
 /**
  * Polygon class represents two-dimensional polygon in 3D Cartesian coordinate
@@ -130,4 +129,35 @@ public class Polygon extends Geometry {
       // Return the intersection point with the plane of the polygon
       return List.of(new Intersection(this, planeIntersections.getFirst() , this.getMaterial()));
    }
+
+   /**
+    * Get the vertices of the polygon
+    *
+    * @return the vertices of the polygon
+    */
+   @Override
+   protected AABB calculateBoundingBox() {
+      if (vertices.isEmpty()) {
+         return null;
+      }
+
+      double minX = vertices.get(0).getX();
+      double maxX = vertices.get(0).getX();
+      double minY = vertices.get(0).getY();
+      double maxY = vertices.get(0).getY();
+      double minZ = vertices.get(0).getZ();
+      double maxZ = vertices.get(0).getZ();
+
+      for (Point vertex : vertices) {
+         minX = Math.min(minX, vertex.getX());
+         maxX = Math.max(maxX, vertex.getX());
+         minY = Math.min(minY, vertex.getY());
+         maxY = Math.max(maxY, vertex.getY());
+         minZ = Math.min(minZ, vertex.getZ());
+         maxZ = Math.max(maxZ, vertex.getZ());
+      }
+
+      return new AABB(new Point(minX, minY, minZ), new Point(maxX, maxY, maxZ));
+   }
+
 }

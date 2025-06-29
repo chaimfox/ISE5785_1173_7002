@@ -20,6 +20,29 @@ public class AABB {
         this.max = max;
     }
 
+    // Getters
+    public Point getMin() { return min; }
+    public Point getMax() { return max; }
+    public Vector getSize() { return max.subtract(min); }
+
+    public Point getCenter() {
+        Vector half = max.subtract(min).scale(0.5);
+        return min.add(half);
+    }
+
+    /**
+     * Calculate the surface area of the AABB
+     * @return surface area
+     */
+    public double getSurfaceArea() {
+        Vector size = getSize();
+        double dx = size.getX();
+        double dy = size.getY();
+        double dz = size.getZ();
+        return 2 * (dx * dy + dy * dz + dz * dx);
+    }
+
+
     /**
      * Check if ray intersects with this AABB
      * @param ray the ray to check
@@ -90,26 +113,6 @@ public class AABB {
         return new AABB(newMin, newMax);
     }
 
-    // Getters
-    public Point getMin() { return min; }
-    public Point getMax() { return max; }
-    public Vector getSize() { return max.subtract(min); }
-    public Point getCenter() {
-        Vector half = max.subtract(min).scale(0.5);
-        return min.add(half);
-    }
-
-    /**
-     * Calculate the surface area of the AABB
-     * @return surface area
-     */
-    public double getSurfaceArea() {
-        Vector size = getSize();
-        double dx = size.getX();
-        double dy = size.getY();
-        double dz = size.getZ();
-        return 2 * (dx * dy + dy * dz + dz * dx);
-    }
 
     @Override
     public String toString() {

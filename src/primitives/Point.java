@@ -30,14 +30,16 @@ public class Point {
         this.xyz = xyz;
     }
 
+
+    /**
+     * Get the coordinates of the point
+     *
+     * @return the coordinates
+     */
     public double getX() {
         return xyz.d1;
     }
-
-    public double getY() {
-        return xyz.d2;
-    }
-
+    public double getY() { return xyz.d2; }
     public double getZ() {
         return xyz.d3;
     }

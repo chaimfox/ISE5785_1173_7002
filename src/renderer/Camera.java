@@ -187,7 +187,6 @@ public class Camera implements Cloneable {
 
     /** Raw‐threads rendering via PixelManager. */
     private Camera renderImageRawThreads() {
-        int nx = imageWriter.getNx(), ny = imageWriter.getNy();
         List<Thread> threads = new LinkedList<>();
         for (int t = 0; t < threadsCount; t++) {
             threads.add(new Thread(() -> {
@@ -299,17 +298,7 @@ public Camera renderImage() {
                 .setRayTracer(scene, RayTracerType.SIMPLE);
     }
 
-    /**
-     * Sets the ray tracer for the camera, which is responsible for tracing rays
-     * and determining the color of pixels based on the scene.
-     *
-     * @param tracer The SimpleRayTracer object to set for the camera.
-     * @return this Builder object for method chaining.
-     */
-    public Builder setRayTracer(SimpleRayTracer tracer) {
-        this.rayTracer = tracer;
-        return new Builder().setRayTracer(null, RayTracerType.SIMPLE);
-    }
+
 
     /**
      * Camera builder
@@ -412,6 +401,20 @@ public Camera renderImage() {
                 camera.rayTracer = new SimpleRayTracer(scene);
             else
                 camera.rayTracer = null;
+            return this;
+        }
+
+        public Builder setSoftShadows(boolean status){
+            if (camera.rayTracer instanceof SimpleRayTracer) {
+                ((SimpleRayTracer) camera.rayTracer).setSoftShadows(status) ;
+            }
+            return this;
+        }
+
+        public Builder setGridResolution(int grid){
+            if (camera.rayTracer instanceof SimpleRayTracer) {
+                ((SimpleRayTracer) camera.rayTracer).setGridResolution(grid) ;
+            }
             return this;
         }
 
