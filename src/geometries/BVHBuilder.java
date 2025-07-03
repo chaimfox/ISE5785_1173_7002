@@ -121,7 +121,6 @@ public class BVHBuilder {
         // Create a Geometries collection for multiple objects
         Geometries leaf = new Geometries();
         for (Intersectable obj : objects) {
-            // יש להניח שיש מתודה add() ב-Geometries
             leaf.add(obj);
         }
         return leaf;
@@ -257,72 +256,93 @@ public class BVHBuilder {
         }
     }
 
-    /**
-     * Print BVH statistics for debugging and analysis
-     */
-    public static void printBVHStatistics(Intersectable bvh) {
-        if (bvh == null) {
-            System.out.println("BVH is null");
-            return;
-        }
 
-        BVHStats stats = collectStatistics(bvh, 0);
-        System.out.println("BVH Statistics:");
-        System.out.println("Total nodes: " + stats.totalNodes);
-        System.out.println("Leaf nodes: " + stats.leafNodes);
-        System.out.println("Internal nodes: " + stats.internalNodes);
-        System.out.println("Max depth: " + stats.maxDepth);
-        System.out.println("Average objects per leaf: " +
-                (stats.leafNodes > 0 ? (double)stats.totalObjects / stats.leafNodes : 0));
-    }
 
-    /**
-     * Collect statistics about the BVH structure
-     * @param node The current node in the BVH
-     * @param depth The current depth in the BVH tree
-     * @return Statistics about the BVH
-     */
-    private static BVHStats collectStatistics(Intersectable node, int depth) {
-        BVHStats stats = new BVHStats();
-        stats.maxDepth = depth;
-        stats.totalNodes = 1;
 
-        if (node instanceof BVHNode) {
-            stats.internalNodes = 1;
-            BVHNode bvhNode = (BVHNode) node;
-            BVHStats leftStats = collectStatistics(bvhNode.getLeft(), depth + 1);
-            BVHStats rightStats = collectStatistics(bvhNode.getRight(), depth + 1);
-            stats.combine(leftStats);
-            stats.combine(rightStats);
-        } else {
-            stats.leafNodes = 1;
-            stats.totalObjects = 1; // אובייקט יחיד או Geometries
-        }
 
-        return stats;
-    }
 
-    /**
-     * Represents a node in the BVH tree
-     */
-    private static class BVHStats {
-        // Statistics for the BVH
-        int totalNodes = 0;
-        int leafNodes = 0;
-        int internalNodes = 0;
-        int maxDepth = 0;
-        int totalObjects = 0;
 
-        /**
-         * Combine statistics from another BVHStats object
-         * @param other The other BVHStats to combine with
-         */
-        void combine(BVHStats other) {
-            totalNodes += other.totalNodes;
-            leafNodes += other.leafNodes;
-            internalNodes += other.internalNodes;
-            maxDepth = Math.max(maxDepth, other.maxDepth);
-            totalObjects += other.totalObjects;
-        }
-    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//
+//    /**
+//     * Print BVH statistics for debugging and analysis
+//     */
+//    public static void printBVHStatistics(Intersectable bvh) {
+//        if (bvh == null) {
+//            System.out.println("BVH is null");
+//            return;
+//        }
+//
+//        BVHStats stats = collectStatistics(bvh, 0);
+//        System.out.println("BVH Statistics:");
+//        System.out.println("Total nodes: " + stats.totalNodes);
+//        System.out.println("Leaf nodes: " + stats.leafNodes);
+//        System.out.println("Internal nodes: " + stats.internalNodes);
+//        System.out.println("Max depth: " + stats.maxDepth);
+//        System.out.println("Average objects per leaf: " +
+//                (stats.leafNodes > 0 ? (double)stats.totalObjects / stats.leafNodes : 0));
+//    }
+//
+//    /**
+//     * Collect statistics about the BVH structure
+//     * @param node The current node in the BVH
+//     * @param depth The current depth in the BVH tree
+//     * @return Statistics about the BVH
+//     */
+//    private static BVHStats collectStatistics(Intersectable node, int depth) {
+//        BVHStats stats = new BVHStats();
+//        stats.maxDepth = depth;
+//        stats.totalNodes = 1;
+//
+//        if (node instanceof BVHNode) {
+//            stats.internalNodes = 1;
+//            BVHNode bvhNode = (BVHNode) node;
+//            BVHStats leftStats = collectStatistics(bvhNode.getLeft(), depth + 1);
+//            BVHStats rightStats = collectStatistics(bvhNode.getRight(), depth + 1);
+//            stats.combine(leftStats);
+//            stats.combine(rightStats);
+//        } else {
+//            stats.leafNodes = 1;
+//            stats.totalObjects = 1; // אובייקט יחיד או Geometries
+//        }
+//
+//        return stats;
+//    }
+//
+//    /**
+//     * Represents a node in the BVH tree
+//     */
+//    private static class BVHStats {
+//        // Statistics for the BVH
+//        int totalNodes = 0;
+//        int leafNodes = 0;
+//        int internalNodes = 0;
+//        int maxDepth = 0;
+//        int totalObjects = 0;
+//
+//        /**
+//         * Combine statistics from another BVHStats object
+//         * @param other The other BVHStats to combine with
+//         */
+//        void combine(BVHStats other) {
+//            totalNodes += other.totalNodes;
+//            leafNodes += other.leafNodes;
+//            internalNodes += other.internalNodes;
+//            maxDepth = Math.max(maxDepth, other.maxDepth);
+//            totalObjects += other.totalObjects;
+//        }
+//    }
 }

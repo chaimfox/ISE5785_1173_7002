@@ -2,10 +2,9 @@ package renderer;
 
 import geometries.*;
 import lighting.*;
-
-import org.junit.jupiter.api.Test;
 import primitives.*;
 
+import org.junit.jupiter.api.Test;
 import scene.Scene;
 
 import java.util.ArrayList;
@@ -20,7 +19,6 @@ import java.util.Random;
  * 3. BVH only
  * 4. BVH + Multithreading
  * <p>
- * Uses 3000+ objects to demonstrate dramatic BVH acceleration
  */
 class BVHTest {
 
@@ -165,7 +163,7 @@ class BVHTest {
         globalRandom = new Random(789); // Reset seed to ensure identical generation
         List<Intersectable> objects = new ArrayList<>();
 
-        // Cluster 1: Left Front Spheres (80 objects)
+        // Cluster 1: Left Front Spheres (50 objects)
         Point center1 = new Point(-300, 0, -300);
         for (int i = 0; i < 50; i++) {
             Point position = center1.add(new Vector(
@@ -173,10 +171,10 @@ class BVHTest {
                     globalRandom.nextGaussian() * 60,
                     globalRandom.nextGaussian() * 70
             ));
-            objects.add(createDeterministicSphere(position, i));
+            objects.add(createDeterministicSphere(position));
         }
 
-        // Cluster 2: Right Front Spheres (80 objects)
+        // Cluster 2: Right Front Spheres (50 objects)
         Point center2 = new Point(300, 0, -300);
         for (int i = 0; i < 50; i++) {
             Point position = center2.add(new Vector(
@@ -184,7 +182,7 @@ class BVHTest {
                     globalRandom.nextGaussian() * 60,
                     globalRandom.nextGaussian() * 70
             ));
-            objects.add(createDeterministicSphere(position, i + 80));
+            objects.add(createDeterministicSphere(position));
         }
 
         // Cluster 3: Top Back Spheres (60 objects)
@@ -195,10 +193,10 @@ class BVHTest {
                     globalRandom.nextGaussian() * 60,
                     globalRandom.nextGaussian() * 70
             ));
-            objects.add(createDeterministicSphere(position, i + 160));
+            objects.add(createDeterministicSphere(position));
         }
 
-        // Cluster 4: Left Triangles (70 objects)
+        // Cluster 4: Left Triangles (50 objects)
         Point center4 = new Point(-150, -100, -450);
         for (int i = 0; i < 50; i++) {
             Point position = center4.add(new Vector(
@@ -206,7 +204,7 @@ class BVHTest {
                     globalRandom.nextGaussian() * 40,
                     globalRandom.nextGaussian() * 50
             ));
-            objects.add(createDeterministicTriangle(position, i + 220));
+            objects.add(createDeterministicTriangle(position));
         }
 
         // Cluster 5: Right Triangles (70 objects)
@@ -217,7 +215,7 @@ class BVHTest {
                     globalRandom.nextGaussian() * 40,
                     globalRandom.nextGaussian() * 50
             ));
-            objects.add(createDeterministicTriangle(position, i + 290));
+            objects.add(createDeterministicTriangle(position));
         }
 
 
@@ -248,7 +246,7 @@ class BVHTest {
     /**
      * ✅ Creates deterministic sphere using global Random
      */
-    private Sphere createDeterministicSphere(Point center, int index) {
+    private Sphere createDeterministicSphere(Point center) {
         // Size deterministic based on current Random state
         double size = 6 + (globalRandom.nextDouble() * 12);
 
@@ -274,7 +272,7 @@ class BVHTest {
     /**
      * ✅ Creates deterministic triangle using global Random
      */
-    private Triangle createDeterministicTriangle(Point center, int index) {
+    private Triangle createDeterministicTriangle(Point center) {
         double size = 12 + (globalRandom.nextDouble() * 25);
         double angle = globalRandom.nextDouble() * Math.PI * 2;
 

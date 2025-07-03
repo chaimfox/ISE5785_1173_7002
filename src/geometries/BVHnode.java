@@ -65,7 +65,7 @@ public class BVHNode extends Intersectable {
      */
     @Override
     protected List<Intersection> calculateIntersectionsHelper(Ray ray) {
-        // CRITICAL: Add bounding box check FIRST!
+        // Add bounding box check FIRST
         if (!getBoundingBox().intersect(ray)) {
             return null;
         }

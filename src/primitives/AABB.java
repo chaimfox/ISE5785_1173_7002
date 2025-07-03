@@ -49,7 +49,7 @@ public class AABB {
      * @return true if intersection exists
      */
     public boolean intersect(Ray ray) {
-        Point rayOrigin = ray.getPoint(0); // משתמש בgetPoint במקום getHead
+        Point rayOrigin = ray.getPoint(0);
         Vector rayDir = ray.getDirection();
 
         double tMin = Double.NEGATIVE_INFINITY;
